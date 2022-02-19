@@ -249,7 +249,7 @@ function Auction() {
             case 19:
               arr = [];
               _context2.next = 22;
-              return base('nftcryptopunks').select({
+              return base('nfts').select({
                 // Selecting the first 10 records in Grid view:
                 maxRecords: 10,
                 sort: [{

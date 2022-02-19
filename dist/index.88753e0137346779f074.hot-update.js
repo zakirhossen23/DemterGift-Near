@@ -221,7 +221,7 @@ function BidNFTModal(_ref) {
               Airtable = __webpack_require__(/*! airtable */ "./node_modules/airtable/lib/airtable.js");
               base = new Airtable({
                 apiKey: 'keyR1Rrcl9O2s9bTs'
-              }).base('appgbRCpbkzmdcucO'); // await base('nftcryptopunks').update([
+              }).base('appgbRCpbkzmdcucO'); // await base('nfts').update([
               // 	{
               // 		"id": recid,
               // 		"fields": {
@@ -239,7 +239,7 @@ function BidNFTModal(_ref) {
               }
 
               _context4.next = 6;
-              return base('nftcryptopunks').select({
+              return base('nfts').select({
                 filterByFormula: "({id} = '".concat(selectedCategory[i], "')"),
                 sort: [{
                   field: "price",

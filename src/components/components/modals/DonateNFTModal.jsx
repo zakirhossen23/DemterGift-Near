@@ -76,7 +76,7 @@ export default function DonateNFTModal({
         });
         const base = require('airtable').base('appgbRCpbkzmdcucO');
        
-        await base('nftcryptopunks').create([
+        await base('nfts').create([
 			{
 			  "fields": {
 				"name": name,

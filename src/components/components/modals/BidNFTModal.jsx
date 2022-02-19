@@ -140,7 +140,7 @@ export default function BidNFTModal({
 		var Airtable = require('airtable');
 		var base = new Airtable({ apiKey: 'keyR1Rrcl9O2s9bTs' }).base('appgbRCpbkzmdcucO');
 
-		await base('nftcryptopunks').update([
+		await base('nfts').update([
 			{
 				"id": recid,
 				"fields": {

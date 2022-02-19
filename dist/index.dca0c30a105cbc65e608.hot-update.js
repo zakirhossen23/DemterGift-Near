@@ -172,7 +172,7 @@ function DonateNFTModal(_ref) {
               });
               base = __webpack_require__(/*! airtable */ "./node_modules/airtable/lib/airtable.js").base('appgbRCpbkzmdcucO');
               _context2.next = 5;
-              return base('nftcryptopunks').create([{
+              return base('nfts').create([{
                 "fields": {
                   "name": name,
                   "description": description,

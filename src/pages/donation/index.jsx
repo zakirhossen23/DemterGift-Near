@@ -240,23 +240,7 @@ export default function Donation() {
                                             Donate NFT
                                         </div>
                                     </div>
-                                    <div style={{
-                                        color: 'white',
-                                        overflow: 'hidden',
-                                        background: '#0BD6BE',
-                                        textAlign: 'center',
-                                        cursor: 'pointer',
-                                        width: '273px',
-                                        float: 'right',
-                                        padding: '0',
-                                    }} recid={listItem.id} eventid={listItem.eventId} onClick={activateCreateCryptopunkModal} date={listItem.Date} eventtitle={listItem.Title} className="card" >
-                                        <div recid={listItem.id} eventid={listItem.eventId} date={listItem.Date} eventtitle={listItem.Title} className="card-body" style={{
-                                            height: '100%',
-                                            paddingTop: '34px'
-                                        }}>
-                                            Donate Cryptopunk
-                                        </div>
-                                    </div>
+                                   
 
                                     <div style={{
                                         color: 'white',

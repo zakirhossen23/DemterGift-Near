@@ -4,11 +4,14 @@ import { useParams } from 'react-router-dom'
 import { eventgetbyid } from '../../Events/event'
 import { tokengetbyeventid } from '../../Events/token'
 
+import { toast } from 'react-toastify';
+import * as nearAPI from "near-api-js"
 
 import BidNFTModal from '../../../components/components/modals/BidNFTModal';
 import ViewBidNFTModal from '../../../components/components/modals/ViewBidNFTModal';
 
 import DonateNFTModal from '../../../components/components/modals/DonateNFTModal';
+import AddLotteryModal from '@/modals/lottery/AddLotteryModal';
 
 export default function Auction() {
     const regex = /\[(.*)\]/g;
@@ -26,6 +29,7 @@ export default function Auction() {
 
     console.log("id => ", id);
     const [CreatemodalShow, setDonateModalShow] = useState(false);
+    const [AddLotterymodalShow, setAddLotteryModalShow] = useState(false);
 
     const [eventId, setEventId] = useState(id);
     const [RealEventId, setRealEventId] = useState(0);
@@ -39,7 +43,7 @@ export default function Auction() {
     const [date, setdate] = useState('');
     const [dateleftBid, setdateleftBid] = useState('');
     const [logo, setlogo] = useState('');
-    const [selectid, setselectid] = useState('');
+    const [selectid, setselectid] = useState(0);
     const [selectrecid, setselectrecid] = useState('');
     const [selecttitle, setselecttitle] = useState('');
     const [selecttype, setselecttype] = useState('');
@@ -49,8 +53,8 @@ export default function Auction() {
     const boolTrue = true;
     const [modalShow, setModalShow] = useState(false);
     const [ViewmodalShow, setViewModalShow] = useState(false);
-
-
+    const [currentWallet, setCurrentWallet] = useState('');
+    let currentWalletBought = []
 
     const formatter = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
@@ -119,8 +123,10 @@ export default function Auction() {
                 setdateleftBid(LeftDateBid(record.get("endDate")));
                 setlogo(record.get("logolink"));
 
+
+
                 console.log('Retrieved', record.getId());
-                await base('nftcryptopunks').select({
+                await base('nfts').select({
                     filterByFormula: `({eventid} = '${Number(record.get('id'))}')`,
                     // Selecting the first 10 records in Grid view:
                     maxRecords: 10,
@@ -129,7 +135,15 @@ export default function Auction() {
                 }).eachPage(function page(records, fetchNextPage) {
                     // This function (`page`) will get called for each page of records.
                     var arr = [];
-                    records.forEach(function (record) {
+                    records.forEach(async function (record) {
+                        let currentAcc = (walletAccount._authData.accountId);
+                        setCurrentWallet(walletAccount._authData.accountId);
+                        
+                        let isbought = false;
+                        try{ if (record.get("isbought").includes(currentAcc)) {
+                            isbought = true;
+                        }}catch{}
+                       
                         var goalPrice2usd = 0;
                         goalPrice2usd = Number(Number(record.get("price")) * nearPrice);
                         arr.push({
@@ -141,17 +155,19 @@ export default function Auction() {
                             price: Number(record.get("price")),
                             type: record.get("type"),
                             image: record.get("image"),
+                            lottery: record.get("lottery"),
+                            isbought: isbought
                         });
                     });
 
                     setList(arr);
                     if (document.getElementById("Loading"))
-                    document.getElementById("Loading").style = "display:none";
+                        document.getElementById("Loading").style = "display:none";
 
                 }, function done(err) {
                     if (err) { console.error(err); return; }
                 });
-          
+
             });
 
 
@@ -200,15 +216,96 @@ export default function Auction() {
         setselecttype("NFT");
         setModalShow(true);
     }
-    function activateBidCryptopunkTModal(e) {
-        setselectrecid(e.target.getAttribute("recid"));
+    function addtoLottery(e) {
         setselectid(e.target.getAttribute("tokenid"));
-        setselecttype("Cryptopunk");
-        setselectbid(e.target.getAttribute("highestbid"));
-        console.log(selectbid);
-
-        setModalShow(true);
+        setselectrecid(e.target.getAttribute("recid"));
+        setAddLotteryModalShow(true);
     }
+
+    async function BuyLottery(e) {
+        var Amount = e.target.getAttribute("price");
+        var ToAddress = e.target.getAttribute("wallet");
+        var nftid = e.target.getAttribute("tokenid");
+        var nftrecid =e.target.getAttribute("recid");
+
+        await toast.promise(BuyingLottery(Amount, ToAddress), {
+            pending: "Buying Lottery...",
+            error: "Please try again later",
+            success: "Bought successfully!"
+        })
+        await toast.promise(CreatingOnAirtable(nftid,nftrecid), {
+            pending: "Updating on Airtable...",
+            error: "Please try again later",
+            success: "Updated successfully!"
+        })
+        window.location.reload();
+    }
+    async function BuyingLottery(Amount, ToAddress) {
+        var buttonProps = document.getElementsByClassName("btn btn-primary")[0];
+        if (window.walletAccount.isSignedIn() == false) {
+            buttonProps.innerText = "Connect to NEAR wallet"
+            await toast.warn("Not connected with NEAR wallet! Connecting...");
+            await window.walletAccount.requestSignIn(
+                window.nearConfig.contractName,
+                'DemeterGift');
+            return;
+        }
+        // We call say Hi and then update who said Hi last.
+        // window.contract.sayHi().then(updateWhoSaidHi);
+        const config = {
+            networkId: "testnet",
+            keyStore: new nearAPI.keyStores.BrowserLocalStorageKeyStore(),
+            nodeUrl: "https://rpc.testnet.near.org",
+            walletUrl: "https://wallet.testnet.near.org",
+            helperUrl: "https://helper.testnet.near.org",
+            explorerUrl: "https://explorer.testnet.near.org",
+        };
+        // sends NEAR tokens
+        const near = await nearAPI.connect(config);
+        const account = await near.account(walletAccount.getAccountId());
+        const amountInYocto = (Number(Amount) * 1000000000000000000000000).toLocaleString('fullwide', { useGrouping: false });
+
+        await account.sendMoney(
+            ToAddress, // receiver account
+            amountInYocto // amount in yoctoNEAR
+        ).catch((error) => {
+            console.error("error:", error);
+            console.log(error);
+            return;
+        })
+    }
+    async function CreatingOnAirtable(nftid,nftrecid) {
+
+        var Airtable = require('airtable');
+        Airtable.configure({
+            endpointUrl: 'https://api.airtable.com',
+            apiKey: 'keyR1Rrcl9O2s9bTs'
+        });
+        const base = require('airtable').base('appgbRCpbkzmdcucO');
+
+        await base('lotteryBought').create([
+            {
+                "fields": {
+                    "nftid": Number(nftid),
+                    "user": currentWallet,
+                }
+            }
+        ]);
+        let users = '';
+        await base('nfts').find(nftrecid, function (err, record) {
+            users = record.get('isbought');
+        });
+        users = users + ", " + window.walletAccount._authData.accountId;
+        await base('nfts').update([
+            {
+                "id": nftrecid,
+                "fields": {
+                    "isbought": users
+                }
+            }
+        ]);
+    }
+
 
     function activateCreateNFTModal(e) {
         setselecttype("NFT");
@@ -216,11 +313,6 @@ export default function Auction() {
         setDonateModalShow(true);
     }
 
-    function activateCreateCryptopunkModal(e) {
-        setselecttype("Cryptopunk");
-
-        setDonateModalShow(true);
-    }
 
     return (
         <>
@@ -258,9 +350,7 @@ export default function Auction() {
                         <div onClick={activateCreateNFTModal} className="card" style={{ color: 'white', overflow: 'hidden', background: '#0BD6BE', textAlign: 'center', width: '172px', cursor: 'pointer', height: '48px', margin: '0', padding: '0px' }}>
                             <div onClick={activateCreateNFTModal} className="card-body" style={{ height: '100%', paddingTop: '21px', fontSize: '21px' }}>Donate NFT</div>
                         </div>
-                        <div className="card" onClick={activateCreateCryptopunkModal} style={{ color: 'white', overflow: 'hidden', background: '#0BD6BE', textAlign: 'center', cursor: 'pointer', float: 'right', width: '202px', height: '48px', padding: '0px' }}>
-                            <div onClick={activateCreateCryptopunkModal} className="card-body" style={{ height: '100%', paddingTop: '21px', fontSize: '21px' }}>Donate Cryptopunk</div>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -291,9 +381,15 @@ export default function Auction() {
                             </div>
                             <div className='ElementBottomContainer'>
                                 <div style={{ maxWidth: "216px" }}>
-                                    <h3 style={{ fontSize: '1vw' }} className="smallgrey">Current bid</h3>
-                                    <h4 style={{ fontSize: '1.7vw' }} className='bidprice'>$ {listItem.Bidprice.toFixed(2)} ({listItem.price} {walletType})</h4>
-                                    <h7 style={{ fontSize: '1vw' }} name="date" date={date} className="smallgrey">{dateleftBid}</h7>
+                                    {listItem.lottery != "true" ? (<>
+                                        <h3 style={{ fontSize: '1vw' }} className="smallgrey">Current bid</h3>
+                                        <h4 style={{ fontSize: '1.7vw' }} className='bidprice'>$ {listItem.Bidprice.toFixed(2)} ({listItem.price} {walletType})</h4>
+                                        <h7 style={{ fontSize: '1vw' }} name="date" date={date} className="smallgrey">{dateleftBid}</h7>
+                                    </>) : (<>
+                                        <h3 style={{ fontSize: '1vw' }} className="smallgrey">Ticket price</h3>
+                                        <h4 style={{ fontSize: '1.7vw' }} className='bidprice'>$ {listItem.Bidprice.toFixed(2)} ({listItem.price} {walletType})</h4>
+
+                                    </>)}
                                 </div>
                                 <div className='BidAllcontainer' >
                                     <div className='Bidsbutton'>
@@ -302,21 +398,33 @@ export default function Auction() {
                                                 <div tokenid={listItem.Id} recid={listItem.recId} title={listItem.name} className="card-body bidbuttonText">View</div>
                                             </div>
                                         </div>
+                                        {listItem.lottery != "true" ? (<div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} goalScore={goal} className="Bidcontainer col" onClick={activateBidNFTModal}>
+                                            <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card BidcontainerCard">
+                                                <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card-body bidbuttonText">Bid</div>
+                                            </div>
+                                        </div>) : ((selectwallet == currentWallet) ? (
+                                            <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} goalScore={goal} className="Bidcontainer col" onClick={addtoLottery}>
+                                                <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card BidcontainerCard" onClick={addtoLottery} style={{ width: "215px" }}>
+                                                    <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card-body bidbuttonText" onClick={addtoLottery}>Add to Lottery</div>
+                                                </div>
+                                            </div>) : ((listItem.isbought == true) ? (<>
+                                                <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} goalScore={goal} className="Bidcontainer col" onClick={BuyLottery}>
+                                                    <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card BidcontainerCard" style={{ width: "271px" }}>
+                                                        <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card-body bidbuttonText" >Go to lottery</div>
+                                                    </div>
+                                                </div>
+                                            </>) : (<>
+                                                <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} goalScore={goal} className="Bidcontainer col" onClick={BuyLottery}>
+                                                    <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card BidcontainerCard" style={{ width: "271px" }}>
+                                                        <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card-body bidbuttonText" >Buy lottery ticket</div>
+                                                    </div>
+                                                </div>
+                                            </>)))
+                                        }
 
 
-                                        {listItem.type == "Cryptopunk" ? (
-                                            <div tokenid={listItem.Id} recid={listItem.recId} wallet={listItem.wallet} highestbid={listItem.price} className="Bidcontainer col" onClick={activateBidCryptopunkTModal}>
-                                                <div tokenid={listItem.Id} recid={listItem.recId} wallet={listItem.wallet} highestbid={listItem.price} className="card BidcontainerCard">
-                                                    <div tokenid={listItem.Id} recid={listItem.recId} wallet={listItem.wallet} highestbid={listItem.price} className="card-body bidbuttonText">Bid</div>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} goalScore={goal} className="Bidcontainer col" onClick={activateBidNFTModal}>
-                                                <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card BidcontainerCard">
-                                                    <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card-body bidbuttonText">Bid</div>
-                                                </div>
-                                            </div>
-                                        )}
+
+
                                     </div>
                                 </div>
                             </div>
@@ -366,6 +474,18 @@ export default function Auction() {
                 SelectedTitle={title}
                 enddate={date}
             />
+
+            <AddLotteryModal
+                show={AddLotterymodalShow}
+                onHide={() => {
+                    setAddLotteryModalShow(false);
+                    // This is a poor implementation, better to implement an event listener
+                }}
+                nftrecid={selectrecid}
+                nftid={selectid}
+                eventid={RealEventId}
+            />
+
 
 
         </>
