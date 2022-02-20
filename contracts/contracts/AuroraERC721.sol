@@ -21,7 +21,7 @@ constructor(string memory name, string memory symbol)
    
 	function claimToken(address _claimer,uint256 eventId,uint256 tokentId,
 		string memory _tokenURI) public returns (uint256) {
-		_mint(_claimer, _tokenIds);
+		_mint(_claimer, tokentId);
 		_setTokenEvent(tokentId,eventId, _tokenURI);
 		_tokenIds++;
 		return _tokenIds;

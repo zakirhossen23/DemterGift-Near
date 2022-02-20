@@ -190,7 +190,7 @@ export default function Donation() {
                         width: '100%',
                         padding: '38px 18px'
                     }}>
-                        <div style={{ width: "33%", height: '238px' }}>
+                        <div style={{ width: '33%',height: '238px',marginTop: '-37px' }}>
                             <img src={listItem.logo} style={{
 
                                 maxHeight: '259px'

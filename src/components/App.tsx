@@ -15,7 +15,11 @@ import { appRoutes } from '@/routes'
 import Home from '@/pages/Home'
 import CreateEvents from '@/pages/CreateEvents'
 import Donation from '@/pages/donation'
+
 import Auction from '@/pages/donation/auction'
+
+import Lottery from '@/pages/lottery'
+
 import './App.scss'
 import * as serviceWorker from "./serviceWorker";
 import '@/near-contracts/contract';
@@ -50,6 +54,9 @@ export function App(): JSX.Element {
                             </Route>
                             <Route exact path='/donation/auction'>
                                 <Auction />
+                            </Route> 
+                            <Route exact path='/lottery'>
+                                <Lottery />
                             </Route>
                         </Switch>
                     </main>

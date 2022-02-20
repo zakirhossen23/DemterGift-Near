@@ -25,6 +25,7 @@ export default function DonateNFTModal({
 	const { contract, signerAddress } = useContract('ERC721');
 	const [selectedMarket, setSelectedMarket] = useState("Aurora/Paras");
 
+	let NewTokenId = 0;
 	const [PendingText, setPendingText] = useState(" is creating...");
 	const [ErrorText, setErrorText] = useState("Please try again later");
 	const [SuccessText, setSuccessText] = useState(" has created on Aurora!");
@@ -69,35 +70,33 @@ export default function DonateNFTModal({
 	}
 	async function CreatingNFTAirtable() {
 
-        var Airtable = require('airtable');
-        Airtable.configure({
-            endpointUrl: 'https://api.airtable.com',
-            apiKey: 'keyR1Rrcl9O2s9bTs'
-        });
-        const base = require('airtable').base('appgbRCpbkzmdcucO');
-       
-        await base('nfts').create([
-			{
-			  "fields": {
-				"name": name,
-				"description": description,
-				"price": price,
-				"type": type,
-				"image": url,
-				"eventid": Number(EventID)
-			  }
-			}
-        ], function (err, records) {
-            if (err) {
-                console.error(err);
-				throw err;
-                return;
-            }
-            
-        });
-    
+		var Airtable = require('airtable');
+		Airtable.configure({
+			endpointUrl: 'https://api.airtable.com',
+			apiKey: 'keyR1Rrcl9O2s9bTs'
+		});
+		const base = require('airtable').base('appgbRCpbkzmdcucO');
 
-    }
+
+		var test = await base('nfts').create([
+			{
+				"fields": {
+					"name": name,
+					"description": description,
+					"price": price,
+					"type": type,
+					"image": url,
+					"eventid": Number(EventID),
+					"ownerWallet": signerAddress
+				}
+			}])
+		var done = new Promise((resolve, reject) => {
+			NewTokenId = test[0].get('id');
+			resolve(NewTokenId);
+		}).then(e => { return e });
+		console.log(await done);
+
+	}
 	async function creatingNFTonAurora() {
 		let Logourl = url;
 		var tokenAddress = NFTaddress;
@@ -106,8 +105,6 @@ export default function DonateNFTModal({
 		}
 
 		try {
-
-			const tokenID = await createTokenAPI(EventID, name, description, price, type, Logourl);
 			const createdObject = {
 				eventid: EventID,
 				name: name,
@@ -119,8 +116,8 @@ export default function DonateNFTModal({
 			};
 			const result = await contract.claimToken(
 				signerAddress,
+				NewTokenId,
 				EventID,
-				tokenID,
 				createdObject
 			);
 
@@ -190,7 +187,7 @@ export default function DonateNFTModal({
 				</Form>
 			</Modal.Body>
 		</Modal>
-		
+
 	</>
 
 

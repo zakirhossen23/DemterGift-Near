@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import { eventgetbyid } from '../../Events/event'
 import { tokengetbyeventid } from '../../Events/token'
 
+import { NavLink } from 'react-router-dom'
 import { toast } from 'react-toastify';
 import * as nearAPI from "near-api-js"
 
@@ -13,6 +14,7 @@ import ViewBidNFTModal from '../../../components/components/modals/ViewBidNFTMod
 import DonateNFTModal from '../../../components/components/modals/DonateNFTModal';
 import AddLotteryModal from '@/modals/lottery/AddLotteryModal';
 
+import useContract from '../../../../services/useContract';
 export default function Auction() {
     const regex = /\[(.*)\]/g;
     const str = window.location.search;
@@ -26,7 +28,7 @@ export default function Auction() {
         id = m[1];
     }
 
-
+	const { contract, signerAddress } = useContract('ERC721');
     console.log("id => ", id);
     const [CreatemodalShow, setDonateModalShow] = useState(false);
     const [AddLotterymodalShow, setAddLotteryModalShow] = useState(false);
@@ -111,7 +113,7 @@ export default function Auction() {
 
             await base('events').find(id, async function (err, record) {
                 if (err) { console.error(err); return; }
-
+                setEventId(record.getId());
                 setRealEventId(record.get('id'));
                 setTitle(record.get("title"));
                 setWalletType(record.get("wallettype"));
@@ -138,12 +140,14 @@ export default function Auction() {
                     records.forEach(async function (record) {
                         let currentAcc = (walletAccount._authData.accountId);
                         setCurrentWallet(walletAccount._authData.accountId);
-                        
+
                         let isbought = false;
-                        try{ if (record.get("isbought").includes(currentAcc)) {
-                            isbought = true;
-                        }}catch{}
-                       
+                        try {
+                            if (record.get("isbought").includes(currentAcc)) {
+                                isbought = true;
+                            }
+                        } catch { }
+
                         var goalPrice2usd = 0;
                         goalPrice2usd = Number(Number(record.get("price")) * nearPrice);
                         arr.push({
@@ -169,9 +173,6 @@ export default function Auction() {
                 });
 
             });
-
-
-
 
         }
     }
@@ -226,14 +227,14 @@ export default function Auction() {
         var Amount = e.target.getAttribute("price");
         var ToAddress = e.target.getAttribute("wallet");
         var nftid = e.target.getAttribute("tokenid");
-        var nftrecid =e.target.getAttribute("recid");
+        var nftrecid = e.target.getAttribute("recid");
 
         await toast.promise(BuyingLottery(Amount, ToAddress), {
             pending: "Buying Lottery...",
             error: "Please try again later",
             success: "Bought successfully!"
         })
-        await toast.promise(CreatingOnAirtable(nftid,nftrecid), {
+        await toast.promise(CreatingOnAirtable(nftid, nftrecid), {
             pending: "Updating on Airtable...",
             error: "Please try again later",
             success: "Updated successfully!"
@@ -250,9 +251,7 @@ export default function Auction() {
                 'DemeterGift');
             return;
         }
-        // We call say Hi and then update who said Hi last.
-        // window.contract.sayHi().then(updateWhoSaidHi);
-        const config = {
+         const config = {
             networkId: "testnet",
             keyStore: new nearAPI.keyStores.BrowserLocalStorageKeyStore(),
             nodeUrl: "https://rpc.testnet.near.org",
@@ -274,7 +273,7 @@ export default function Auction() {
             return;
         })
     }
-    async function CreatingOnAirtable(nftid,nftrecid) {
+    async function CreatingOnAirtable(nftid, nftrecid) {
 
         var Airtable = require('airtable');
         Airtable.configure({
@@ -288,19 +287,23 @@ export default function Auction() {
                 "fields": {
                     "nftid": Number(nftid),
                     "user": currentWallet,
+                    "userWallet": signerAddress
                 }
             }
         ]);
         let users = '';
+        let participated = 0;
         await base('nfts').find(nftrecid, function (err, record) {
             users = record.get('isbought');
+            participated = record.get('participated');
         });
         users = users + ", " + window.walletAccount._authData.accountId;
         await base('nfts').update([
             {
                 "id": nftrecid,
                 "fields": {
-                    "isbought": users
+                    "isbought": users,
+                    "participated": participated + 1
                 }
             }
         ]);
@@ -350,8 +353,14 @@ export default function Auction() {
                         <div onClick={activateCreateNFTModal} className="card" style={{ color: 'white', overflow: 'hidden', background: '#0BD6BE', textAlign: 'center', width: '172px', cursor: 'pointer', height: '48px', margin: '0', padding: '0px' }}>
                             <div onClick={activateCreateNFTModal} className="card-body" style={{ height: '100%', paddingTop: '21px', fontSize: '21px' }}>Donate NFT</div>
                         </div>
-
                     </div>
+                    <NavLink to={`/lottery?[${RealEventId}]`}>
+                        <div style={{ display: 'flex', gap: '14px', position: 'absolute', right: '208px' }} >
+                            <div className="card" style={{ color: 'white', overflow: 'hidden', background: '#0BD6BE', textAlign: 'center', width: '172px', cursor: 'pointer', height: '48px', margin: '0', padding: '0px' }}>
+                                <div className="card-body" style={{ height: '100%', paddingTop: '21px', fontSize: '21px' }}>Go to lottery</div>
+                            </div>
+                        </div>
+                    </NavLink>
                 </div>
             </div>
             <div id='Loading' className="LoadingArea">
@@ -404,27 +413,27 @@ export default function Auction() {
                                             </div>
                                         </div>) : ((selectwallet == currentWallet) ? (
                                             <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} goalScore={goal} className="Bidcontainer col" onClick={addtoLottery}>
-                                                <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card BidcontainerCard" onClick={addtoLottery} style={{ width: "215px" }}>
+                                                <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card BidcontainerCard" onClick={addtoLottery} >
                                                     <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card-body bidbuttonText" onClick={addtoLottery}>Add to Lottery</div>
                                                 </div>
                                             </div>) : ((listItem.isbought == true) ? (<>
-                                                <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} goalScore={goal} className="Bidcontainer col" onClick={BuyLottery}>
-                                                    <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card BidcontainerCard" style={{ width: "271px" }}>
-                                                        <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card-body bidbuttonText" >Go to lottery</div>
+                                                <NavLink to={`/lottery?[${RealEventId}]`}>
+                                                    <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} goalScore={goal} className="Bidcontainer col" >
+                                                        <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card BidcontainerCard">
+                                                            <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card-body bidbuttonText" >Go to lottery</div>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                </NavLink>
+
                                             </>) : (<>
-                                                <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} goalScore={goal} className="Bidcontainer col" onClick={BuyLottery}>
-                                                    <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card BidcontainerCard" style={{ width: "271px" }}>
-                                                        <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card-body bidbuttonText" >Buy lottery ticket</div>
+                                                    <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} goalScore={goal} onClick={BuyLottery} className="Bidcontainer col" >
+                                                        <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card BidcontainerCard" >
+                                                            <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card-body bidbuttonText" >Buy lottery ticket</div>
+                                                        </div>
                                                     </div>
-                                                </div>
+
                                             </>)))
                                         }
-
-
-
-
                                     </div>
                                 </div>
                             </div>
@@ -485,9 +494,6 @@ export default function Auction() {
                 nftid={selectid}
                 eventid={RealEventId}
             />
-
-
-
         </>
     );
 }
