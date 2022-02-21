@@ -402,23 +402,31 @@ export default function Auction() {
                                 </div>
                                 <div className='BidAllcontainer' >
                                     <div className='Bidsbutton'>
-                                        <div tokenid={listItem.Id} recid={listItem.recId} title={listItem.name} onClick={activateViewBidModal} className="Bidcontainer col">
+                                        <div style={{width: '168px'}} tokenid={listItem.Id} recid={listItem.recId} title={listItem.name} onClick={activateViewBidModal} className="Bidcontainer col">
                                             <div tokenid={listItem.Id} recid={listItem.recId} title={listItem.name} className="card BidcontainerCard">
                                                 <div tokenid={listItem.Id} recid={listItem.recId} title={listItem.name} className="card-body bidbuttonText">View</div>
                                             </div>
                                         </div>
-                                        {listItem.lottery != "true" ? (<div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} goalScore={goal} className="Bidcontainer col" onClick={activateBidNFTModal}>
+
+                                        {listItem.lottery != "true" ? (<>
+                                        <div style={{width: '168px'}} tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} goalScore={goal} className="Bidcontainer col" onClick={activateBidNFTModal}>
                                             <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card BidcontainerCard">
                                                 <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card-body bidbuttonText">Bid</div>
                                             </div>
-                                        </div>) : ((selectwallet == currentWallet) ? (
-                                            <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} goalScore={goal} className="Bidcontainer col" onClick={addtoLottery}>
+                                        </div>
+
+                                        {((selectwallet == currentWallet) ? (
+                                            <div style={{width: '224px'}} tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} goalScore={goal} className="Bidcontainer col" onClick={addtoLottery}>
                                                 <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card BidcontainerCard" onClick={addtoLottery} >
                                                     <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card-body bidbuttonText" onClick={addtoLottery}>Add to Lottery</div>
                                                 </div>
-                                            </div>) : ((listItem.isbought == true) ? (<>
+                                            </div>):(<></>))}
+
+                                        </>
+                                        
+                                        ) :  ((listItem.isbought == true) ? (<>
                                                 <NavLink to={`/lottery?[${RealEventId}]`}>
-                                                    <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} goalScore={goal} className="Bidcontainer col" >
+                                                    <div style={{width: '224px'}} tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} goalScore={goal} className="Bidcontainer col" >
                                                         <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card BidcontainerCard">
                                                             <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card-body bidbuttonText" >Go to lottery</div>
                                                         </div>
@@ -426,13 +434,13 @@ export default function Auction() {
                                                 </NavLink>
 
                                             </>) : (<>
-                                                    <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} goalScore={goal} onClick={BuyLottery} className="Bidcontainer col" >
+                                                    <div style={{width: '251px'}}  tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} goalScore={goal} onClick={BuyLottery} className="Bidcontainer col" >
                                                         <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card BidcontainerCard" >
                                                             <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card-body bidbuttonText" >Buy lottery ticket</div>
                                                         </div>
                                                     </div>
 
-                                            </>)))
+                                            </>))
                                         }
                                     </div>
                                 </div>

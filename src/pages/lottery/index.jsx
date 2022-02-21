@@ -37,7 +37,8 @@ export default function Lottery() {
     });
     const base = require('airtable').base('appgbRCpbkzmdcucO');
 
-    const [currentNFTid, setcurrentNFTid] = useState('');
+    const [currentNFTid, setcurrentNFTid] = useState(0);
+    const [currentTokenid, setcurrentTokenid] = useState(0);
     const [RecEventID, setRecEventID] = useState('');
 
     var [NFTslist, setNFTslist] = useState([]);
@@ -122,6 +123,7 @@ export default function Lottery() {
                                 endDate: currentList.endDate,
                                 participated: record.get('participated'),
                                 ownerWallet: record.get('ownerWallet'),
+                                TokeniD:record.get('TokenID'),
                             });
                         });
                         resolve(arr);
@@ -135,7 +137,8 @@ export default function Lottery() {
                 setcurrentNFTendDate(arr[0].endDate);
                 setcurrentNFTid(arr[0].id);
                 setcurrentNFTstartDate(arr[0].startDate);
-                setsenderAddress(arr[0].ownerWallet)
+                setsenderAddress(arr[0].ownerWallet);
+                setcurrentTokenid(arr[0].TokeniD);
                 document.getElementById('Loading').style.display = "none";
                 document.getElementById('LoadingDate').style.display = "none";
                 document.getElementById('LotteryInformation').style.display = "";
@@ -193,7 +196,7 @@ export default function Lottery() {
         let receiverAddress = winnerInfo.userWallet;
         const result = await contract[
             'safeTransferFrom(address,address,uint256)'
-        ](senderAddress, receiverAddress, currentNFTid);
+        ](senderAddress, receiverAddress, currentTokenid-1);
         window.open(`https://explorer.testnet.aurora.dev/tx/${result.hash}`, "_blank");
 
         console.log(result);
@@ -210,7 +213,8 @@ export default function Lottery() {
 
 
         await NFTslist.forEach(async (NFT) => {
-            await base('nfts').destroy([NFT.recid], function (err, deletedRecords) {
+            if (NFT.id =currentNFTid){
+                 await base('nfts').destroy([NFT.recid], function (err, deletedRecords) {
                 if (err) {
                     console.error(err);
                     return;
@@ -218,6 +222,8 @@ export default function Lottery() {
                 console.log('Deleted', deletedRecords.length, 'records');
                 window.location.href('/donation')
             });
+            }
+           
         })
 
 

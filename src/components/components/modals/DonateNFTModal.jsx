@@ -22,6 +22,13 @@ export default function DonateNFTModal({
 	selectedWallet
 }) {
 
+	var Airtable = require('airtable');
+	Airtable.configure({
+		endpointUrl: 'https://api.airtable.com',
+		apiKey: 'keyR1Rrcl9O2s9bTs'
+	});
+	const base = require('airtable').base('appgbRCpbkzmdcucO');
+
 	const { contract, signerAddress } = useContract('ERC721');
 	const [selectedMarket, setSelectedMarket] = useState("Aurora/Paras");
 
@@ -68,6 +75,7 @@ export default function DonateNFTModal({
 			success: `Created ${type} on Aurora!`
 		});
 	}
+	let newtokenrec = '';
 	async function CreatingNFTAirtable() {
 
 		var Airtable = require('airtable');
@@ -92,6 +100,7 @@ export default function DonateNFTModal({
 			}])
 		var done = new Promise((resolve, reject) => {
 			NewTokenId = test[0].get('id');
+			newtokenrec = test[0].getId();
 			resolve(NewTokenId);
 		}).then(e => { return e });
 		console.log(await done);
@@ -122,6 +131,19 @@ export default function DonateNFTModal({
 			);
 
 			console.log(result);
+
+			let TokenID = Number(await contract.latestTokenID());
+
+			console.log(TokenID);
+			var test = await base('nfts').update([
+				{
+					"id": newtokenrec,
+					"fields": {
+						"TokenID": TokenID
+					}
+				}
+			]);
+			console.log(test);
 			window.location.href = `/donation/auction?[${EventeRecID}]`;
 			window.document.getElementsByClassName("btn-close")[0].click();
 		} catch (error) {

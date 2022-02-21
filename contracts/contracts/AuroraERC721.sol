@@ -20,8 +20,8 @@ constructor(string memory name, string memory symbol)
 
    
 	function claimToken(address _claimer,uint256 eventId,uint256 tokentId,
-		string memory _tokenURI) public returns (uint256) {
-		_mint(_claimer, tokentId);
+		string memory _tokenURI) public  returns (uint256) {
+		_mint(_claimer, _tokenIds);
 		_setTokenEvent(tokentId,eventId, _tokenURI);
 		_tokenIds++;
 		return _tokenIds;
@@ -50,6 +50,9 @@ constructor(string memory name, string memory symbol)
 		return _eventURIs[eventId];
 	}
 
+	function latestTokenID() public view returns ( uint256) {
+		return _tokenIds;
+	}
 	function createBid(uint256 tokenId, string memory _bidURI) public returns (uint256) {
 		AllTokensBids[_bidIds] = [
 			Strings.toString(tokenId),
