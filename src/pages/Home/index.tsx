@@ -12,7 +12,7 @@ export default function Home() {
 	return (<>
 		<div className="mb-5">
 			<div className="row">
-				<img style={{ 'width': '340px' }} src='/favicon.svg'></img>
+				<img style={{ 'width': '340px' }} src='https://i.postimg.cc/d342vD86/Logo.png'></img>
 
 			</div>
 			<div className="row">
@@ -25,14 +25,14 @@ export default function Home() {
 			<div className="row">
 				<div style={{ 'width': '690px'}} className="col">
 					<div className="text-center">
-						<h4 style={{ fontSize: '20px'}}>DemeterGift uses the power of the Solana infrastructure to create the most easy, transparent, fun and digital charity auction on the web!</h4>
+						<h4 style={{ fontSize: '20px'}}>Demeter creates the most easy, transparent and fun NFT charity auction on Web3, by helping charities raise additional support!</h4>
 					</div>
 				</div>
 			</div>
 			<div className="row">
 				<div style={{ width: '250px' }} className="col">
 					<div onClick={DonateButton} style={{
-						background: '#0BD6BE',
+						background: '#ecc900',
 						textAlign: 'center',
 						cursor: 'pointer',
 						height: '73px',

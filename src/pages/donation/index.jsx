@@ -225,7 +225,7 @@ export default function Donation() {
                                     <div style={{
                                         color: 'white',
                                         overflow: 'hidden',
-                                        background: '#0BD6BE',
+                                        background: 'rgb(236, 201, 0)',
                                         textAlign: 'center',
                                         cursor: 'pointer',
                                         height: '72px',
@@ -245,7 +245,7 @@ export default function Donation() {
                                     <div style={{
                                         color: 'white',
                                         overflow: 'hidden',
-                                        background: '#0BD6BE',
+                                        background: 'rgb(236, 201, 0)',
                                         textAlign: 'center',
                                         cursor: 'pointer',
                                         width: '244px',

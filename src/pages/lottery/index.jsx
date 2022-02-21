@@ -350,7 +350,7 @@ export default function Lottery() {
         <>
             <NavLink to={`/donation/auction?[${RecEventID}]`}>
                 <div style={{ display: 'flex', gap: '14px', position: 'absolute', right: '208px' }} >
-                    <div className="card" style={{ color: 'white', overflow: 'hidden', background: '#0BD6BE', textAlign: 'center', width: '172px', cursor: 'pointer', height: '48px', margin: '0', padding: '0px' }}>
+                    <div className="card" style={{ color: 'white', overflow: 'hidden', background: 'rgb(236, 201, 0)', textAlign: 'center', width: '172px', cursor: 'pointer', height: '48px', margin: '0', padding: '0px' }}>
                         <div className="card-body" style={{ height: '100%', paddingTop: '21px', fontSize: '21px' }}>Go to Auction</div>
                     </div>
                 </div>

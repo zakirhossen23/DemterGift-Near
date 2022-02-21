@@ -360,13 +360,13 @@ export default function Auction() {
                     </div>
 
                     <div style={{ display: 'flex', gap: '14px', position: 'absolute', right: '25px' }} >
-                        <div onClick={activateCreateNFTModal} className="card" style={{ color: 'white', overflow: 'hidden', background: '#0BD6BE', textAlign: 'center', width: '172px', cursor: 'pointer', height: '48px', margin: '0', padding: '0px' }}>
+                        <div onClick={activateCreateNFTModal} className="card" style={{ color: 'white', overflow: 'hidden', background: 'rgb(236, 201, 0)', textAlign: 'center', width: '172px', cursor: 'pointer', height: '48px', margin: '0', padding: '0px' }}>
                             <div onClick={activateCreateNFTModal} className="card-body" style={{ height: '100%', paddingTop: '21px', fontSize: '21px' }}>Donate NFT</div>
                         </div>
                     </div>
                     <NavLink to={`/lottery?[${RealEventId}]`}>
                         <div style={{ display: 'flex', gap: '14px', position: 'absolute', right: '208px' }} >
-                            <div className="card" style={{ color: 'white', overflow: 'hidden', background: '#0BD6BE', textAlign: 'center', width: '172px', cursor: 'pointer', height: '48px', margin: '0', padding: '0px' }}>
+                            <div className="card" style={{ color: 'white', overflow: 'hidden', background: 'rgb(236, 201, 0)', textAlign: 'center', width: '172px', cursor: 'pointer', height: '48px', margin: '0', padding: '0px' }}>
                                 <div className="card-body" style={{ height: '100%', paddingTop: '21px', fontSize: '21px' }}>Go to lottery</div>
                             </div>
                         </div>
@@ -392,10 +392,10 @@ export default function Auction() {
                             <div className="DetialsContainer" style={{ rowGap: "5px" }} >
                                 <h2 style={{ fontSize: '2vw' }} >{listItem.name}</h2>
 
-                                <h4 style={{ color: "rgb(139, 139, 139)", fontSize: '1.7vw' }}>Type: {listItem.type}</h4>
+                                <h4 style={{ color: "rgb(211 187 51)", fontSize: '1.7vw' }}>Type: {listItem.type}</h4>
 
                                 <div className="TextContainer">
-                                    <h4 style={{ color: "#8B8B8B", fontSize: '1.7vw' }}>{listItem.description}</h4>
+                                    <h4 style={{ color: "rgb(211 187 51)", fontSize: '1.7vw' }}>{listItem.description}</h4>
                                 </div>
                             </div>
                             <div className='ElementBottomContainer'>
