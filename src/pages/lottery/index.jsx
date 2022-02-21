@@ -123,7 +123,7 @@ export default function Lottery() {
                                 endDate: currentList.endDate,
                                 participated: record.get('participated'),
                                 ownerWallet: record.get('ownerWallet'),
-                                TokeniD:record.get('TokenID'),
+                                TokeniD: record.get('TokenID'),
                             });
                         });
                         resolve(arr);
@@ -153,7 +153,6 @@ export default function Lottery() {
 
     useEffect(() => {
         LotteryfetchContractData();
-
     }, []);
 
 
@@ -196,7 +195,7 @@ export default function Lottery() {
         let receiverAddress = winnerInfo.userWallet;
         const result = await contract[
             'safeTransferFrom(address,address,uint256)'
-        ](senderAddress, receiverAddress, currentTokenid-1);
+        ](senderAddress, receiverAddress, currentTokenid - 1);
         window.open(`https://explorer.testnet.aurora.dev/tx/${result.hash}`, "_blank");
 
         console.log(result);
@@ -213,17 +212,17 @@ export default function Lottery() {
 
 
         await NFTslist.forEach(async (NFT) => {
-            if (NFT.id =currentNFTid){
-                 await base('nfts').destroy([NFT.recid], function (err, deletedRecords) {
-                if (err) {
-                    console.error(err);
-                    return;
-                }
-                console.log('Deleted', deletedRecords.length, 'records');
-                window.location.href('/donation')
-            });
+            if (NFT.id = currentNFTid) {
+                await base('nfts').destroy([NFT.recid], function (err, deletedRecords) {
+                    if (err) {
+                        console.error(err);
+                        return;
+                    }
+                    console.log('Deleted', deletedRecords.length, 'records');
+                    window.location.href('/donation')
+                });
             }
-           
+
         })
 
 
@@ -270,7 +269,7 @@ export default function Lottery() {
             error: "Please try again later",
             success: "Updated successfully!"
         })
-        
+
     }
 
 
@@ -453,6 +452,7 @@ export default function Lottery() {
                                     End Date:   {CheckDate(listItem.endDate)}
                                 </h4>
                             </div>
+
                             <div
                                 className="ElementBottomContainer"
                                 style={{ margin: 0, bottom: 25, right: 37, position: "absolute" }}
@@ -460,55 +460,44 @@ export default function Lottery() {
                                 <div style={{ right: 0, width: "100%", textAlign: "right" }}>
                                     <div
                                         style={{
-                                            height: 40,
+                                            height: 87,
                                             display: "flex",
                                             alignContent: "center",
                                             flexDirection: "row-reverse",
-                                            alignItems: "center"
+                                            alignItems: "center",
+                                            position: "absolute",
+                                            right: 47,
+                                            bottom: 57,
+                                            borderRadius: 8,
+                                            overflow: "hidden"
                                         }}
                                     >
-                                        <div style={{ background: "greenyellow", width: 167 }}>
+                                        <div
+                                            style={{
+                                                background: "#11222F",
+                                                width: 265,
+                                                height: "100%",
+                                                color: "white"
+                                            }}
+                                        >
                                             <h4
                                                 className="bidprice"
                                                 style={{
-                                                    fontSize: "1.7vw",
+                                                    fontSize: 24,
                                                     height: "100%",
                                                     textAlign: "center",
-                                                    lineHeight: "1.6"
+                                                    lineHeight: "3.6",
+                                                    borderRadius: 40
                                                 }}
-                                            >
-                                                Status
+                                            > {(currentNFTid != listItem.id) ? (<>At {CheckDate(listItem.startDate)}</>) : (<>In Progress</>)}
                                             </h4>
                                         </div>
                                     </div>
-                                    <div
-                                        style={{
-                                            height: 40,
-                                            display: "flex",
-                                            alignContent: "center",
-                                            flexDirection: "row-reverse",
-                                            alignItems: "center"
-                                        }}
-                                    >
-
-                                        {(currentNFTid != listItem.id) ? (<>
-                                            <div style={{ background: "rgb(15 28 179)", width: 167, color: "white" }}>
-                                                <h4 className="bidprice" style={{ fontSize: 14, height: 32, verticalAlign: "middle", textAlign: "center", lineHeight: "2.3" }}>
-                                                    At {CheckDate(listItem.startDate)}
-                                                </h4>
-                                            </div>
-                                        </>) : (<>
-                                            <div style={{ background: "#ff2f2f", width: 167, color: "white" }}>
-                                                <h4 className="bidprice" style={{ fontSize: "1.7vw", height: "100%", textAlign: "center", lineHeight: "1.6" }} >
-                                                    In Progress
-                                                </h4>
-                                            </div>
-
-                                        </>)}
-
-                                    </div>
                                 </div>
                             </div>
+
+
+
                         </div>
                     </div>
                 </div>

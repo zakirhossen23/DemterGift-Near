@@ -13,6 +13,8 @@ import ViewBidNFTModal from '../../../components/components/modals/ViewBidNFTMod
 
 import DonateNFTModal from '../../../components/components/modals/DonateNFTModal';
 import AddLotteryModal from '@/modals/lottery/AddLotteryModal';
+import BuyLotteryModal from '@/modals/lottery/BuyLotteryModal';
+
 
 import useContract from '../../../../services/useContract';
 export default function Auction() {
@@ -28,10 +30,11 @@ export default function Auction() {
         id = m[1];
     }
 
-	const { contract, signerAddress } = useContract('ERC721');
+    const { contract, signerAddress } = useContract('ERC721');
     console.log("id => ", id);
     const [CreatemodalShow, setDonateModalShow] = useState(false);
     const [AddLotterymodalShow, setAddLotteryModalShow] = useState(false);
+    const [BuyLotterymodalShow, setBuyLotteryModalShow] = useState(false);
 
     const [eventId, setEventId] = useState(id);
     const [RealEventId, setRealEventId] = useState(0);
@@ -49,9 +52,12 @@ export default function Auction() {
     const [selectrecid, setselectrecid] = useState('');
     const [selecttitle, setselecttitle] = useState('');
     const [selecttype, setselecttype] = useState('');
+    const [Eventwallet, setEventwallet] = useState("");
     const [selectwallet, setselectwallet] = useState('');
     const [walletType, setWalletType] = useState('');
-    const [selectbid, setselectbid] = useState('');
+    const [selectbid, setselectbid] = useState(0);
+    const [selectprice, setselectprice] = useState(0);
+    const [LotteryNumber, setLotteryNumber] = useState(0);
     const boolTrue = true;
     const [modalShow, setModalShow] = useState(false);
     const [ViewmodalShow, setViewModalShow] = useState(false);
@@ -83,6 +89,7 @@ export default function Auction() {
         var s = Math.floor((d % (1000 * 60)) / 1000);
         return (da.toString() + "d " + h.toString() + "h " + m.toString() + "m " + s.toString() + "s");
     }
+
     async function AuctionfetchContractData() {
         if (id && window.location.pathname == "/donation/auction") {
             console.log("started chekcing");
@@ -117,7 +124,8 @@ export default function Auction() {
                 setRealEventId(record.get('id'));
                 setTitle(record.get("title"));
                 setWalletType(record.get("wallettype"));
-                setselectwallet(record.get('wallet'))
+                setselectwallet(record.get('wallet'));
+                setEventwallet(record.get('wallet'));
                 setgoalusd(formatter.format(Number(Number(record.get("Goal")) * nearPrice)));
                 setgoal(Number(record.get("Goal")));
                 setdateleft(LeftDate(record.get("endDate")));
@@ -160,7 +168,9 @@ export default function Auction() {
                             type: record.get("type"),
                             image: record.get("image"),
                             lottery: record.get("lottery"),
-                            isbought: isbought
+                            isbought: isbought,
+                            ticketnumber: record.get("ticketnumber"),
+                            ownerWallet: record.get("ownerWallet"),
                         });
                     });
 
@@ -224,22 +234,22 @@ export default function Auction() {
     }
 
     async function BuyLottery(e) {
-        var Amount = e.target.getAttribute("price");
-        var ToAddress = e.target.getAttribute("wallet");
-        var nftid = e.target.getAttribute("tokenid");
-        var nftrecid = e.target.getAttribute("recid");
-
-        await toast.promise(BuyingLottery(Amount, ToAddress), {
-            pending: "Buying Lottery...",
-            error: "Please try again later",
-            success: "Bought successfully!"
-        })
-        await toast.promise(CreatingOnAirtable(nftid, nftrecid), {
-            pending: "Updating on Airtable...",
-            error: "Please try again later",
-            success: "Updated successfully!"
-        })
-        window.location.reload();
+        setselectid(e.target.getAttribute("tokenid"));
+        setselectprice(e.target.getAttribute("price"));
+        setselectwallet(e.target.getAttribute("wallet"));
+        setLotteryNumber(e.target.getAttribute("ticketnumber"));
+        setBuyLotteryModalShow(true);
+        // await toast.promise(BuyingLottery(Amount, ToAddress), {
+        //     pending: "Buying Lottery...",
+        //     error: "Please try again later",
+        //     success: "Bought successfully!"
+        // })
+        // await toast.promise(CreatingOnAirtable(nftid, nftrecid), {
+        //     pending: "Updating on Airtable...",
+        //     error: "Please try again later",
+        //     success: "Updated successfully!"
+        // })
+        // window.location.reload();
     }
     async function BuyingLottery(Amount, ToAddress) {
         var buttonProps = document.getElementsByClassName("btn btn-primary")[0];
@@ -251,7 +261,7 @@ export default function Auction() {
                 'DemeterGift');
             return;
         }
-         const config = {
+        const config = {
             networkId: "testnet",
             keyStore: new nearAPI.keyStores.BrowserLocalStorageKeyStore(),
             nodeUrl: "https://rpc.testnet.near.org",
@@ -402,45 +412,48 @@ export default function Auction() {
                                 </div>
                                 <div className='BidAllcontainer' >
                                     <div className='Bidsbutton'>
-                                        <div style={{width: '168px'}} tokenid={listItem.Id} recid={listItem.recId} title={listItem.name} onClick={activateViewBidModal} className="Bidcontainer col">
+                                        <div style={{ width: '168px' }} tokenid={listItem.Id} recid={listItem.recId} title={listItem.name} onClick={activateViewBidModal} className="Bidcontainer col">
                                             <div tokenid={listItem.Id} recid={listItem.recId} title={listItem.name} className="card BidcontainerCard">
                                                 <div tokenid={listItem.Id} recid={listItem.recId} title={listItem.name} className="card-body bidbuttonText">View</div>
                                             </div>
                                         </div>
 
                                         {listItem.lottery != "true" ? (<>
-                                        <div style={{width: '168px'}} tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} goalScore={goal} className="Bidcontainer col" onClick={activateBidNFTModal}>
-                                            <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card BidcontainerCard">
-                                                <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card-body bidbuttonText">Bid</div>
-                                            </div>
-                                        </div>
-
-                                        {((selectwallet == currentWallet) ? (
-                                            <div style={{width: '224px'}} tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} goalScore={goal} className="Bidcontainer col" onClick={addtoLottery}>
-                                                <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card BidcontainerCard" onClick={addtoLottery} >
-                                                    <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card-body bidbuttonText" onClick={addtoLottery}>Add to Lottery</div>
+                                            {(selectwallet != currentWallet) ? (<>
+                                                <div style={{ width: '168px' }} tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} goalScore={goal} className="Bidcontainer col" onClick={activateBidNFTModal}>
+                                                    <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card BidcontainerCard">
+                                                        <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card-body bidbuttonText">Bid</div>
+                                                    </div>
                                                 </div>
-                                            </div>):(<></>))}
+                                            </>) : (<></>)}
+
+
+                                            {((selectwallet == currentWallet) ? (
+                                                <div style={{ width: '224px' }} tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} goalScore={goal} className="Bidcontainer col" onClick={addtoLottery}>
+                                                    <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card BidcontainerCard" onClick={addtoLottery} >
+                                                        <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card-body bidbuttonText" onClick={addtoLottery}>Add to Lottery</div>
+                                                    </div>
+                                                </div>) : (<></>))}
 
                                         </>
-                                        
-                                        ) :  ((listItem.isbought == true) ? (<>
-                                                <NavLink to={`/lottery?[${RealEventId}]`}>
-                                                    <div style={{width: '224px'}} tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} goalScore={goal} className="Bidcontainer col" >
-                                                        <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card BidcontainerCard">
-                                                            <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card-body bidbuttonText" >Go to lottery</div>
-                                                        </div>
-                                                    </div>
-                                                </NavLink>
 
-                                            </>) : (<>
-                                                    <div style={{width: '251px'}}  tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} goalScore={goal} onClick={BuyLottery} className="Bidcontainer col" >
-                                                        <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card BidcontainerCard" >
-                                                            <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card-body bidbuttonText" >Buy lottery ticket</div>
-                                                        </div>
+                                        ) : ((listItem.isbought == true) ? (<>
+                                            <NavLink to={`/lottery?[${RealEventId}]`}>
+                                                <div style={{ width: '224px' }} tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} goalScore={goal} className="Bidcontainer col" >
+                                                    <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card BidcontainerCard">
+                                                        <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} className="card-body bidbuttonText" >Go to lottery</div>
                                                     </div>
+                                                </div>
+                                            </NavLink>
 
-                                            </>))
+                                        </>) : (<>
+                                            <div style={{ width: '251px' }} tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} ticketnumber={listItem.ticketnumber} price={listItem.price} goalScore={goal} ownerWallet={listItem.ownerWallet} onClick={BuyLottery} className="Bidcontainer col" >
+                                                <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} ticketnumber={listItem.ticketnumber} ownerWallet={listItem.ownerWallet} className="card BidcontainerCard" >
+                                                    <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} price={listItem.price} ticketnumber={listItem.ticketnumber} ownerWallet={listItem.ownerWallet} className="card-body bidbuttonText" >Buy lottery ticket</div>
+                                                </div>
+                                            </div>
+
+                                        </>))
                                         }
                                     </div>
                                 </div>
@@ -453,7 +466,7 @@ export default function Auction() {
                 show={modalShow}
                 onHide={() => {
                     setModalShow(false);
-                    // This is a poor implementation, better to implement an event listener
+
                     AuctionfetchContractData();
                 }}
                 tokenId={selectid}
@@ -472,7 +485,7 @@ export default function Auction() {
                 show={ViewmodalShow}
                 onHide={() => {
                     setViewModalShow(false);
-                    // This is a poor implementation, better to implement an event listener
+
                     AuctionfetchContractData();
                 }}
                 id={selectid}
@@ -484,9 +497,9 @@ export default function Auction() {
                 show={CreatemodalShow}
                 onHide={() => {
                     setDonateModalShow(false);
-                    // This is a poor implementation, better to implement an event listener
+
                 }}
-                EventID={eventId}
+                EventID={RealEventId}
                 type={selecttype}
                 SelectedTitle={title}
                 enddate={date}
@@ -496,12 +509,19 @@ export default function Auction() {
                 show={AddLotterymodalShow}
                 onHide={() => {
                     setAddLotteryModalShow(false);
-                    // This is a poor implementation, better to implement an event listener
+
                 }}
                 nftrecid={selectrecid}
                 nftid={selectid}
                 eventid={RealEventId}
             />
-        </>
+            <BuyLotteryModal
+                show={BuyLotterymodalShow}
+                onHide={() => { setBuyLotteryModalShow(false) }}
+                nftid={selectid}
+                ToAddress={Eventwallet}
+                price={selectprice}
+                ticketnumber={LotteryNumber}
+            /></>
     );
 }

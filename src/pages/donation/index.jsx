@@ -275,7 +275,7 @@ export default function Donation() {
                 show={CreatemodalShow}
                 onHide={() => {
                     setModalShow(false);
-                    // This is a poor implementation, better to implement an event listener
+                    
                 }}
                 EventID={selectid}
                 EventeRecID={selectEventeRecID}

@@ -101,7 +101,7 @@ export function Nav(): JSX.Element {
                                     <div className="wallet__address" style={{ fontSize: 14, letterSpacing: "0.5px" }}>
                                         {acc}
                                     </div>
-                                    <div className="wallet__balance" style={{ color: "rgba(255, 255, 255, 0.56)",fontSize: 12,letterSpacing: "0.6px"}}>
+                                    <div className="wallet__balance" style={{ color: "rgb(236 190 33 / 50%)",fontSize: 12,letterSpacing: "0.6px"}}>
                                         {NearBalance} NEAR
                                     </div>
                                 </div>
