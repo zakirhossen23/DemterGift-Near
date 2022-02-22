@@ -78,21 +78,21 @@ export default (_: any, options: any): WebpackConfig => {
     config.plugins.push(
         new HtmlWebpackPlugin({
             title: 'Demeter',
-            favicon: 'public/favicon.svg',
+            favicon: 'public/favicon.ico',
             filename: path.resolve(__dirname, 'dist/index.html'),
             template: 'public/index.html',
             inject: false,
         })
         , new HtmlWebpackPlugin({
             title: 'Demeter - Donation',
-            favicon: 'public/favicon.svg',
+            favicon: 'public/favicon.ico',
             filename: path.resolve(__dirname, 'dist/donation/index.html'),
             template: 'public/index.html',
             inject: false,
         })
         , new HtmlWebpackPlugin({
             title: 'Demeter - Create Events',
-            favicon: 'public/favicon.svg',
+            favicon: 'public/favicon.ico',
             filename: path.resolve(__dirname, 'dist/CreateEvents/index.html'),
             template: 'public/index.html',
             inject: false,

@@ -15,10 +15,12 @@ export default function BuyLotteryModal({
     show,
     onHide,
     nftid,
+    nftrecid,
     ToAddress,
     price,
     ticketnumber
 }) {
+    const { contract, signerAddress } = useContract('ERC721');
 
     const [Quantity, amountTicketInput] = UseFormInput({
         type: 'text',
@@ -31,55 +33,61 @@ export default function BuyLotteryModal({
     }, [Quantity]);
 
     async function buyLottery() {
-        await toast.promise(BuyingLottery(Totalamount, ToAddress), {
-            pending: "Buying Lottery Ticket...",
-            error: "Please try again later",
-            success: "success!"
-        })
-        await toast.promise(BuyingLottery(Totalamount, ToAddress), {
-            pending: "Updating Lottery Ticket on Airtable...",
-            error: "Please try again later",
-            success: "Success!"
-        })
-        window.location.reload();
+        try {
+            await toast.promise(BuyingLottery(Totalamount, ToAddress), {
+                pending: "Buying Lottery Ticket...",
+                error: "Please try again later",
+                success: "success!"
+            })
+            await toast.promise(CreatingOnAirtable(Totalamount, ToAddress), {
+                pending: "Updating Lottery Ticket on Airtable...",
+                error: "Please try again later",
+                success: "Success!"
+            })
+
+        } catch (e) {
+        }
+
     }
     async function BuyingLottery(Amount, ToAddress) {
-        try{  
+        try {
             var buttonProps = document.getElementsByClassName("btn btn-primary")[0];
-        if (window.walletAccount.isSignedIn() == false) {
-            buttonProps.innerText = "Connect to NEAR wallet"
-            await toast.warn("Not connected with NEAR wallet! Connecting...");
-            await window.walletAccount.requestSignIn(
-                window.nearConfig.contractName,
-                'Demeter');
-            return;
-        }
-        const config = {
-            networkId: "testnet",
-            keyStore: new nearAPI.keyStores.BrowserLocalStorageKeyStore(),
-            nodeUrl: "https://rpc.testnet.near.org",
-            walletUrl: "https://wallet.testnet.near.org",
-            helperUrl: "https://helper.testnet.near.org",
-            explorerUrl: "https://explorer.testnet.near.org",
-        };
-        // sends NEAR tokens
-        const near = await nearAPI.connect(config);
-        const account = await near.account(walletAccount.getAccountId());
-        const amountInYocto = (Number(Amount) * 1000000000000000000000000).toLocaleString('fullwide', { useGrouping: false });
+            if (window.walletAccount.isSignedIn() == false) {
+                buttonProps.innerText = "Connect to NEAR wallet"
+                await toast.warn("Not connected with NEAR wallet! Connecting...");
+                await window.walletAccount.requestSignIn(
+                    window.nearConfig.contractName,
+                    'Demeter');
+                return;
+            }
+            const config = {
+                networkId: "testnet",
+                keyStore: new nearAPI.keyStores.BrowserLocalStorageKeyStore(),
+                nodeUrl: "https://rpc.testnet.near.org",
+                walletUrl: "https://wallet.testnet.near.org",
+                helperUrl: "https://helper.testnet.near.org",
+                explorerUrl: "https://explorer.testnet.near.org",
+            };
+            // sends NEAR tokens
+            const near = await nearAPI.connect(config);
+            const account = await near.account(walletAccount.getAccountId());
+            //const amountInYocto = nearAPI.utils.format.formatNearAmount(Amount);
 
-        await account.sendMoney(
-            ToAddress, // receiver account
-            amountInYocto // amount in yoctoNEAR
-        ).catch((error) => {
-            console.error("error:", error);
-            console.log(error);
-            return;
-        })
-            await CreatingOnAirtable()
-        }catch(e){
+            const amountInYocto = (Number(Amount) * 1000000000000000000000000).toLocaleString('fullwide', { useGrouping: false });
+
+            await account.sendMoney(
+                ToAddress, // receiver account
+                amountInYocto // amount in yoctoNEAR
+            ).catch((error) => {
+                console.error("error:", error);
+                console.log(error);
+
+            })
+
+        } catch (e) {
 
         }
-      
+
     }
     async function CreatingOnAirtable() {
 
@@ -90,9 +98,12 @@ export default function BuyLotteryModal({
         });
         const base = require('airtable').base('appgbRCpbkzmdcucO');
 
-
-        var endnumber = ticketnumber + Quantity;
-        for (let i = ticketnumber; i < endnumber; i++) {
+        if (ticketnumber == null) {
+            ticketnumber = 0;
+        }
+        let currentWallet = window.walletAccount._authData.accountId;
+        var endnumber = Number(ticketnumber) + Number(Quantity);
+        for (let i = Number(ticketnumber); i < endnumber; i++) {
             await base('lotteryBought').create([
                 {
                     "fields": {
@@ -107,10 +118,18 @@ export default function BuyLotteryModal({
 
         let users = '';
         let participated = 0;
-        await base('nfts').find(nftrecid, function (err, record) {
-            users = record.get('isbought');
-            participated = record.get('participated');
-        });
+        var done = new Promise(async (resolve, reject) => {
+            await base('nfts').find(nftrecid, async function (err, record) {
+                users = record.get('isbought');
+                if (record.get('participated') != "" && record.get('participated') != null) {
+                    participated = record.get('participated');
+                }
+                resolve(participated);
+            });
+
+        }).then(e => { return e });
+        console.log(done);
+
         users = users + ", " + window.walletAccount._authData.accountId;
         await base('nfts').update([
             {
@@ -122,6 +141,7 @@ export default function BuyLotteryModal({
                 }
             }
         ]);
+        window.location.reload();
     }
 
 

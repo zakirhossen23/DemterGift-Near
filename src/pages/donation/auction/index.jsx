@@ -235,6 +235,7 @@ export default function Auction() {
 
     async function BuyLottery(e) {
         setselectid(e.target.getAttribute("tokenid"));
+        setselectrecid(e.target.getAttribute("recid"));
         setselectprice(e.target.getAttribute("price"));
         setselectwallet(e.target.getAttribute("wallet"));
         setLotteryNumber(e.target.getAttribute("ticketnumber"));
@@ -520,6 +521,7 @@ export default function Auction() {
                 onHide={() => { setBuyLotteryModalShow(false) }}
                 nftid={selectid}
                 ToAddress={Eventwallet}
+                nftrecid={selectrecid}
                 price={selectprice}
                 ticketnumber={LotteryNumber}
             /></>

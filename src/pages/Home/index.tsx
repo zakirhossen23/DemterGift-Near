@@ -12,7 +12,7 @@ export default function Home() {
 	return (<>
 		<div className="mb-5">
 			<div className="row">
-				<img style={{ 'width': '340px' }} src='https://i.postimg.cc/d342vD86/Logo.png'></img>
+				<img style={{ 'width': '340px' }} src='https://i.postimg.cc/1z7RpZsX/favicon.png'></img>
 
 			</div>
 			<div className="row">
