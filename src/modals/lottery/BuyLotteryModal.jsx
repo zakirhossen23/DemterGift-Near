@@ -51,7 +51,7 @@ export default function BuyLotteryModal({
             await toast.warn("Not connected with NEAR wallet! Connecting...");
             await window.walletAccount.requestSignIn(
                 window.nearConfig.contractName,
-                'DemeterGift');
+                'Demeter');
             return;
         }
         const config = {
