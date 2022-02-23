@@ -15,7 +15,7 @@ import { appRoutes } from '@/routes'
 import Home from '@/pages/Home'
 import CreateEvents from '@/pages/CreateEvents'
 import Donation from '@/pages/donation'
-
+import Login from '@/modals/login/main'
 import Auction from '@/pages/donation/auction'
 
 import Lottery from '@/pages/lottery'
@@ -48,6 +48,9 @@ export function App(): JSX.Element {
                             </Route>
                             <Route exact path="/CreateEvents">
                                 <CreateEvents />
+                            </Route>
+                            <Route exact path="/login">
+                                <Login />
                             </Route>
                             <Route exact path="/donation">
                                 <Donation />

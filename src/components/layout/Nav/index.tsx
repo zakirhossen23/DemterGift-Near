@@ -8,7 +8,6 @@ import '@/near-contracts/contract';
 
 import * as nearAPI from "near-api-js"
 import getConfig from "@/config"
-import LOGINModal from '@/modals/login';
 
 export function Nav(): JSX.Element {
     const [acc, setAcc] = useState('');
@@ -47,12 +46,9 @@ export function Nav(): JSX.Element {
     useEffect(() => {
         fetch();
     }, [2000]);
-
-    const [modalShow, setModalShow] = useState(false);
-    return (
-        <nav className="main-nav">
-            <ul>
-
+    function NavButtons(): JSX.Element {
+        if (window.localStorage.getItem("Type") == null || window.localStorage.getItem("Type") == "") {
+            return (<>
                 <li>
                     <NavLink to="/donation" id="donationbtnNav">
                         Donation
@@ -63,11 +59,40 @@ export function Nav(): JSX.Element {
                         Create Events
                     </NavLink>
                 </li>
+            </>);
+        }
+        if (window.localStorage.getItem("Type") == "user") {
+            return (<>
+                <li>
+                    <NavLink to="/donation" id="donationbtnNav">
+                        Donation
+                    </NavLink>
+                </li></>);
+        }
+        return (<>
+            <li>
+                <NavLink to="/donation" id="donationbtnNav">
+                    Donation
+                </NavLink>
+            </li>
+            <li>
+                <NavLink to="/CreateEvents">
+                    Create Events
+                </NavLink>
+            </li>
+        </>)
+    }
+    const [modalShow, setModalShow] = useState(false);
+    return (
+        <nav className="main-nav">
+            <ul>
+                <NavButtons />
+
                 <li>
                     <div id='withoutSign' className="wallets">
                         <div className="wallet">
-                            <button type="button" onClick={() => (setModalShow(true))} className="btn btn-secondary" aria-disabled="false">
-                                Connect to a wallet
+                            <button type="button" onClick={() => (window.location.href = "/login")} className="btn btn-secondary" aria-disabled="false">
+                                Login
                             </button>
                         </div>
                     </div>
@@ -101,11 +126,11 @@ export function Nav(): JSX.Element {
                                     <div className="wallet__address" style={{ fontSize: 14, letterSpacing: "0.5px" }}>
                                         {acc}
                                     </div>
-                                    <div className="wallet__balance" style={{ color: "rgb(236 190 33 / 50%)",fontSize: 12,letterSpacing: "0.6px"}}>
+                                    <div className="wallet__balance" style={{ color: "rgb(236 190 33 / 50%)", fontSize: 12, letterSpacing: "0.6px" }}>
                                         {NearBalance} NEAR
                                     </div>
                                 </div>
-                                <button type="button" onClick={()=>{window.walletAccount.signOut(); window.location.reload()}} className="btn btn-logout" style={{ padding: 0 }}>
+                                <button type="button" onClick={() => { window.localStorage.setItem("Type", ""); window.walletAccount.signOut(); window.location.reload() }} className="btn btn-logout" style={{ padding: 0 }}>
                                     <span className="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" height={32} width={32} style={{ fill: "rgb(197, 228, 243)" }}>
                                             <path
@@ -124,11 +149,7 @@ export function Nav(): JSX.Element {
                 </li>
             </ul>
 
-            <LOGINModal
-                show={modalShow}
-                onHide={() => setModalShow(false)}
-                redirecting="#"
-            />
+
         </nav>
     )
 }

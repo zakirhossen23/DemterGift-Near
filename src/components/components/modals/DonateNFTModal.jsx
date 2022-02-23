@@ -30,12 +30,7 @@ export default function DonateNFTModal({
 	const base = require('airtable').base('appgbRCpbkzmdcucO');
 
 	const { contract, signerAddress } = useContract('ERC721');
-	const [selectedMarket, setSelectedMarket] = useState("Aurora/Paras");
-
 	let NewTokenId = 0;
-	const [PendingText, setPendingText] = useState(" is creating...");
-	const [ErrorText, setErrorText] = useState("Please try again later");
-	const [SuccessText, setSuccessText] = useState(" has created on Aurora!");
 
 	const [name, nameInput] = UseFormInput({
 		type: 'text',

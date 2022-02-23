@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom'
 import DonateNFTModal from '../../components/components/modals/DonateNFTModal';
+import './donation.css';
 
 export default function Donation() {
     const [CreatemodalShow, setModalShow] = useState(false);
@@ -40,24 +41,24 @@ export default function Donation() {
 
     async function fetchContractData() {
 
-            //Near currency
+        //Near currency
+        var nearPrice = 0;
+        try {
+            var nearCurrencyUrl = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug=near-protocol&start=1&limit=1&category=spot&sort=cmc_rank_advanced";
+            let options = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json, text/plain, */*'
+                },
+            };
+            await fetch(nearCurrencyUrl, options).then(res => res.json())
+                .then(json => nearPrice = json)
+                .catch(err => console.error('error:' + err));
+            nearPrice = nearPrice.data.marketPairs[0].price;
+        } catch (ex) {
             var nearPrice = 0;
-            try {
-                var nearCurrencyUrl = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug=near-protocol&start=1&limit=1&category=spot&sort=cmc_rank_advanced";
-                let options = {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json, text/plain, */*'
-                    },
-                };
-                await fetch(nearCurrencyUrl, options).then(res => res.json())
-                    .then(json => nearPrice = json)
-                    .catch(err => console.error('error:' + err));
-                nearPrice = nearPrice.data.marketPairs[0].price;
-            } catch (ex) {
-                var nearPrice = 0;
-            }
+        }
         try {
             var Airtable = require('airtable');
             var base = new Airtable({ apiKey: 'keyR1Rrcl9O2s9bTs' }).base('appgbRCpbkzmdcucO');
@@ -65,7 +66,7 @@ export default function Donation() {
             base('events').select({
                 // Selecting the first 3 records in Grid view:
                 maxRecords: 10,
-                sort: [{field: "endDate", direction: "asc"}],
+                sort: [{ field: "endDate", direction: "asc" }],
                 view: "Grid view"
             }).eachPage(function page(records, fetchNextPage) {
                 // This function (`page`) will get called for each page of records.
@@ -80,7 +81,7 @@ export default function Donation() {
                         Date: record.get("endDate"),
                         Goalusd: formatter.format(goalPrice2usd),
                         Goal: record.get("Goal"),
-                        logo:  record.get("logolink"),
+                        logo: record.get("logolink"),
                         wallettype: record.get("wallettype")
                     });
                 });
@@ -89,15 +90,15 @@ export default function Donation() {
                 // To fetch the next page of records, call `fetchNextPage`.
                 // If there are more records, `page` will get called again.
                 // If there are no more records, `done` will get called.
-               // fetchNextPage();
- 
-               if (document.getElementById("Loading")) {
-                document.getElementById("Loading").style = "display:none";
-            }
+                // fetchNextPage();
+
+                if (document.getElementById("Loading")) {
+                    document.getElementById("Loading").style = "display:none";
+                }
             }, function done(err) {
                 if (err) { console.error(err); return; }
             });
-        
+
 
         } catch (error) {
             console.error(error);
@@ -139,6 +140,28 @@ export default function Donation() {
         // }
         return (output);
     }
+
+
+    function EventButtons() {
+        if (window.localStorage.getItem("Type") == "" || window.localStorage.getItem("Type") == null) {
+            return (<>
+
+            </>)
+        }
+
+        if (window.localStorage.getItem("Type") == "user") {
+            return (<>
+
+            </>)
+        }
+
+        return (<>
+
+
+        </>)
+
+    }
+
 
     return (
         <>
@@ -190,7 +213,7 @@ export default function Donation() {
                         width: '100%',
                         padding: '38px 18px'
                     }}>
-                        <div style={{ width: '33%',height: '238px',marginTop: '-37px' }}>
+                        <div style={{ width: '33%', height: '238px', marginTop: '-37px' }}>
                             <img src={listItem.logo} style={{
 
                                 maxHeight: '259px'
@@ -221,48 +244,84 @@ export default function Donation() {
                                 justifyContent: 'flex-end'
                             }}>
                                 <div style={{ "display": "flex", gap: "14px" }}>
-
-                                    <div style={{
-                                        color: 'white',
-                                        overflow: 'hidden',
-                                        background: 'rgb(236, 201, 0)',
-                                        textAlign: 'center',
-                                        cursor: 'pointer',
-                                        height: '72px',
-                                        width: '244px',
-                                        float: 'right',
-                                        padding: '0px'
-                                    }} recid={listItem.id} eventid={listItem.eventId} date={listItem.Date} eventtitle={listItem.Title} className="card" wallettype={listItem.wallettype} onClick={activateCreateNFTModal}>
-                                        <div recid={listItem.id} eventid={listItem.eventId} date={listItem.Date} eventtitle={listItem.Title} className="card-body" style={{
-                                            height: '100%',
-                                            paddingTop: '34px'
-                                        }} wallettype={listItem.wallettype}>
-                                            Donate NFT
+                                    {(window.localStorage.getItem('Type') == "" || window.localStorage.getItem('Type') == null) ? (
+                                        <div style={{
+                                            color: 'white',
+                                            overflow: 'hidden',
+                                            background: 'rgb(236, 201, 0)',
+                                            textAlign: 'center',
+                                            cursor: 'pointer',
+                                            height: '72px',
+                                            width: '244px',
+                                            float: 'right',
+                                            padding: '0px'
+                                        }} onClick={(e) => { window.location.href = '/login' }} >
+                                            <div className="card-body" style={{ height: '100%', paddingTop: '34px' }} >
+                                                Login
+                                            </div>
                                         </div>
-                                    </div>
-                                   
-
-                                    <div style={{
-                                        color: 'white',
-                                        overflow: 'hidden',
-                                        background: 'rgb(236, 201, 0)',
-                                        textAlign: 'center',
-                                        cursor: 'pointer',
-                                        width: '244px',
-                                        float: 'right',
-                                        padding: '0',
-                                    }} className="card" >
-                                        <NavLink to={`/donation/auction?[${listItem.id}]`}>
-
-                                            <div className="card-body" style={{
+                                   ) : (window.localStorage.getItem('Type') == "user" ? (<>
+                                        <div style={{
+                                            color: 'white',
+                                            overflow: 'hidden',
+                                            background: 'rgb(236, 201, 0)',
+                                            textAlign: 'center',
+                                            cursor: 'pointer',
+                                            height: '72px',
+                                            width: '244px',
+                                            float: 'right',
+                                            padding: '0px'
+                                        }} recid={listItem.id} eventid={listItem.eventId} date={listItem.Date} eventtitle={listItem.Title} className="card" wallettype={listItem.wallettype} onClick={activateCreateNFTModal}>
+                                            <div recid={listItem.id} eventid={listItem.eventId} date={listItem.Date} eventtitle={listItem.Title} className="card-body" style={{
                                                 height: '100%',
                                                 paddingTop: '34px'
-                                            }}>
-                                                Go to auction
+                                            }} wallettype={listItem.wallettype}>
+                                                Donate NFT
                                             </div>
-                                        </NavLink>
-                                    </div>
+                                        </div>
+                                        <div style={{
+                                            color: 'white',
+                                            overflow: 'hidden',
+                                            background: 'rgb(236, 201, 0)',
+                                            textAlign: 'center',
+                                            cursor: 'pointer',
+                                            width: '244px',
+                                            float: 'right',
+                                            padding: '0',
+                                        }} className="card" >
+                                            <NavLink to={`/donation/auction?[${listItem.id}]`}>
 
+                                                <div className="card-body" style={{
+                                                    height: '100%',
+                                                    paddingTop: '34px'
+                                                }}>
+                                                    Go to auction
+                                                </div>
+                                            </NavLink>
+                                        </div>
+                                    </>) : (
+                                        <div style={{
+                                            color: 'white',
+                                            overflow: 'hidden',
+                                            background: 'rgb(236, 201, 0)',
+                                            textAlign: 'center',
+                                            cursor: 'pointer',
+                                            width: '244px',
+                                            float: 'right',
+                                            padding: '0',
+                                        }} className="card" >
+                                            <NavLink to={`/donation/auction?[${listItem.id}]`}>
+
+                                                <div className="card-body" style={{
+                                                    height: '100%',
+                                                    height: '68px',
+                                                    paddingTop: '34px'
+                                                }}>
+                                                    Go to auction
+                                                </div>
+                                            </NavLink>
+                                        </div>
+                                    ))}
                                 </div>
 
                             </div>
@@ -275,7 +334,7 @@ export default function Donation() {
                 show={CreatemodalShow}
                 onHide={() => {
                     setModalShow(false);
-                    
+
                 }}
                 EventID={selectid}
                 EventeRecID={selectEventeRecID}

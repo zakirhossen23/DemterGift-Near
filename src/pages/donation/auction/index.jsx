@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-import { useParams } from 'react-router-dom'
-import { eventgetbyid } from '../../Events/event'
-import { tokengetbyeventid } from '../../Events/token'
-
 import { NavLink } from 'react-router-dom'
 import { toast } from 'react-toastify';
 import * as nearAPI from "near-api-js"
@@ -197,6 +193,9 @@ export default function Auction() {
 
 
     function calculateTimeLeft() {
+        if ((window.localStorage.getItem('Type') == "" || window.localStorage.getItem('Type') == null)) {
+            window.location.href = "/login";
+        }
         try {
             var allDates = document.getElementsByName("dateleft");
             for (let i = 0; i < allDates.length; i++) {
@@ -212,6 +211,10 @@ export default function Auction() {
     }
 
     function activateViewBidModal(e) {
+        if ((window.localStorage.getItem('Type') == "" || window.localStorage.getItem('Type') == null)) {
+            window.location.href = "/login";
+        }
+
         setselectrecid(e.target.getAttribute("recid"));
         setselectid(e.target.getAttribute("tokenid"));
         setselecttitle(e.target.getAttribute("title"));
@@ -220,6 +223,10 @@ export default function Auction() {
     }
 
     function activateBidNFTModal(e) {
+        if ((window.localStorage.getItem('Type') == "" || window.localStorage.getItem('Type') == null)) {
+            window.location.href = "/login";
+        }
+
         setselectrecid(e.target.getAttribute("recid"));
         setselectid(e.target.getAttribute("tokenid"));
         setselectbid(e.target.getAttribute("highestbid"));
@@ -228,6 +235,11 @@ export default function Auction() {
         setModalShow(true);
     }
     function addtoLottery(e) {
+
+        if ((window.localStorage.getItem('Type') == "" || window.localStorage.getItem('Type') == null)) {
+            window.location.href = "/login";
+        }
+
         setselectid(e.target.getAttribute("tokenid"));
         setselectrecid(e.target.getAttribute("recid"));
         setAddLotteryModalShow(true);
@@ -328,6 +340,57 @@ export default function Auction() {
     }
 
 
+    function Topbutton() {
+        if ((window.localStorage.getItem('Type') == "" || window.localStorage.getItem('Type') == null)) {
+            return (<>
+                <div style={{
+                    color: 'white',
+                    overflow: 'hidden',
+                    background: 'rgb(236, 201, 0)',
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    height: '72px',
+                    width: '244px',
+                    float: 'right',
+                    padding: '0px'
+                }} onClick={(e) => { window.location.href = '/login' }} >
+                    <div className="card-body" style={{ height: '100%', paddingTop: '34px' }} >
+                        Login
+                    </div>
+                </div>
+            </>)
+        }
+        if ((window.localStorage.getItem('Type') == "user")) {
+            return (<>
+                <div style={{ display: 'flex', gap: '14px', position: 'absolute', right: '25px' }} >
+                    <div onClick={activateCreateNFTModal} className="card" style={{ color: 'white', overflow: 'hidden', background: 'rgb(236, 201, 0)', textAlign: 'center', width: '172px', cursor: 'pointer', height: '48px', margin: '0', padding: '0px' }}>
+                        <div onClick={activateCreateNFTModal} className="card-body" style={{ height: '100%', paddingTop: '21px', fontSize: '21px' }}>Donate NFT</div>
+                    </div>
+                </div>
+
+
+                <NavLink to={`/lottery?[${RealEventId}]`}>
+                    <div style={{ display: 'flex', gap: '14px', position: 'absolute', right: '208px' }} >
+                        <div className="card" style={{ color: 'white', overflow: 'hidden', background: 'rgb(236, 201, 0)', textAlign: 'center', width: '172px', cursor: 'pointer', height: '48px', margin: '0', padding: '0px' }}>
+                            <div className="card-body" style={{ height: '100%', paddingTop: '21px', fontSize: '21px' }}>Go to lottery</div>
+                        </div>
+                    </div>
+                </NavLink>
+            </>)
+        }
+        return (<>
+
+            <NavLink to={`/lottery?[${RealEventId}]`}>
+                <div style={{ display: 'flex', gap: '14px', position: 'absolute', right: '208px' }} >
+                    <div className="card" style={{ color: 'white', overflow: 'hidden', background: 'rgb(236, 201, 0)', textAlign: 'center', width: '172px', cursor: 'pointer', height: '48px', margin: '0', padding: '0px' }}>
+                        <div className="card-body" style={{ height: '100%', paddingTop: '21px', fontSize: '21px' }}>Go to lottery</div>
+                    </div>
+                </div>
+            </NavLink>
+        </>)
+
+    }
+
     return (
         <>
             <div className="row EventContainer" >
@@ -359,19 +422,8 @@ export default function Auction() {
                             }} name='dateleft' date={date}>{dateleft}</h4>
                         </div>
                     </div>
+                    <Topbutton />
 
-                    <div style={{ display: 'flex', gap: '14px', position: 'absolute', right: '25px' }} >
-                        <div onClick={activateCreateNFTModal} className="card" style={{ color: 'white', overflow: 'hidden', background: 'rgb(236, 201, 0)', textAlign: 'center', width: '172px', cursor: 'pointer', height: '48px', margin: '0', padding: '0px' }}>
-                            <div onClick={activateCreateNFTModal} className="card-body" style={{ height: '100%', paddingTop: '21px', fontSize: '21px' }}>Donate NFT</div>
-                        </div>
-                    </div>
-                    <NavLink to={`/lottery?[${RealEventId}]`}>
-                        <div style={{ display: 'flex', gap: '14px', position: 'absolute', right: '208px' }} >
-                            <div className="card" style={{ color: 'white', overflow: 'hidden', background: 'rgb(236, 201, 0)', textAlign: 'center', width: '172px', cursor: 'pointer', height: '48px', margin: '0', padding: '0px' }}>
-                                <div className="card-body" style={{ height: '100%', paddingTop: '21px', fontSize: '21px' }}>Go to lottery</div>
-                            </div>
-                        </div>
-                    </NavLink>
                 </div>
             </div>
             <div id='Loading' className="LoadingArea">
