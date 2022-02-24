@@ -344,7 +344,7 @@ export default function CreateEvents() {
                                                     X
                                                 </div>
                                                 <h4 style={{ marginBottom: "10px", color: "#151F28", textAlign: "center" }}>{eventCategory.title}</h4>
-                                                <img src={eventCategory.image} style={{ width: "100%", borderRadius: "5px", height: "94px" }} />
+                                                <img src={eventCategory.image} style={{ aspectRatio: '1',borderRadius: "5px" }} />
                                                 <h5 style={{ color: "#151F28", textAlign: "center", marginTop: "10px", lineHeight: "14px" }}>{eventCategory.price * eventCategory.amount} USD</h5>
                                                 <h5 style={{ color: "#151F28", textAlign: "center", lineHeight: "14px" }}>({eventCategory.amount} pieces)</h5>
 
