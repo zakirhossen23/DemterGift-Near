@@ -17,7 +17,7 @@ window.nearConfig = getConfig("development");
 export default function CreateEvents() {
     const [modalShow, setModalShow] = useState(false);
     const regex = /\[(.*)\]/g;
-    const str = window.location.search;
+    const str = decodeURIComponent(window.location.search);
     let m;
     let redirecting = "";
     while ((m = regex.exec(str)) !== null) {
