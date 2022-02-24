@@ -354,12 +354,12 @@ export default function Auction() {
                     float: 'right',
                     padding: '0px'
                 }} >
-                        <NavLink to="/login?[/donation]">
-                              <div className="card-body" style={{ height: '100%', paddingTop: '34px' }} >
-                        Login
-                    </div>
-                        </NavLink>
-                  
+                    <NavLink to="/login?[/donation]">
+                        <div className="card-body" style={{ height: '100%', paddingTop: '34px' }} >
+                            Login
+                        </div>
+                    </NavLink>
+
                 </div>
             </>)
         }
@@ -475,7 +475,7 @@ export default function Auction() {
                                         </div>
 
                                         {listItem.lottery != "true" ? (<>
-                                            {(window.localStorage.getItem("Type")=="user") ? (<>
+                                            {(window.localStorage.getItem("Type") == "user") ? (<>
                                                 <div style={{ width: '168px' }} tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} goalScore={goal} className="Bidcontainer col" onClick={activateBidNFTModal}>
                                                     <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card BidcontainerCard">
                                                         <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card-body bidbuttonText">Bid</div>
@@ -484,7 +484,7 @@ export default function Auction() {
                                             </>) : (<></>)}
 
 
-                                            {((window.localStorage.getItem("Type")=="manager") ? (
+                                            {((window.localStorage.getItem("Type") == "manager") && (selectwallet == currentWallet) ? (
                                                 <div style={{ width: '224px' }} tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} goalScore={goal} className="Bidcontainer col" onClick={addtoLottery}>
                                                     <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card BidcontainerCard" onClick={addtoLottery} >
                                                         <div tokenid={listItem.Id} wallet={listItem.wallet} recid={listItem.recId} highestbid={listItem.price} className="card-body bidbuttonText" onClick={addtoLottery}>Add to Lottery</div>
