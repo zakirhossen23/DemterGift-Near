@@ -143,6 +143,10 @@ export default function CreateEvents() {
                 console.error(err);
                 return;
             }
+            if (document.getElementById("plugin").checked) {
+               await CreatePlugin(`https://${window.location.host}/donation/auction?[${records[0].getId()}]`);
+            }
+            if (document.getElementById("plugin").checked)
             await toast.promise(CreateCateCategories(records[0].fields.id), {
                 pending: "Event Categories are creating on Airtable...",
                 error: "Please try again later",
