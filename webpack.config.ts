@@ -110,7 +110,7 @@ export default (_: any, options: any): WebpackConfig => {
             template: 'public/index.html',
             inject: false,
         }),
-        , new HtmlWebpackPlugin({
+         new HtmlWebpackPlugin({
             title: 'Demeter - Contact',
             filename: path.resolve(__dirname, 'dist/contact/index.html'),
             template: 'public/index.html',
