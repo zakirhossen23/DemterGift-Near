@@ -34,13 +34,13 @@ export default function Home() {
 					<NavLink to="/login?[/donation]">
 
 						<div style={{
-							background: '#ecc900',
+							background: 'rgb(236, 201, 0)',
 							textAlign: 'center',
 							cursor: 'pointer',
 							height: '73px',
-							padding: '36px 0',
+							padding: '10px 0px',
 							width: '100%',
-							margin: '0'
+							margin: '0px'
 						}} className="card card-body">
 							<div className="card-body">Let’s donate!</div>
 						</div>

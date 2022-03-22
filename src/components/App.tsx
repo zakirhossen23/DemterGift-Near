@@ -17,6 +17,7 @@ import CreateEvents from '@/pages/CreateEvents'
 import Donation from '@/pages/donation'
 import Login from '@/modals/login/main'
 import Auction from '@/pages/donation/auction'
+import Contact from '@/pages/Contact'
 
 import Lottery from '@/pages/lottery'
 
@@ -60,6 +61,9 @@ export function App(): JSX.Element {
                             </Route> 
                             <Route exact path='/lottery'>
                                 <Lottery />
+                            </Route> 
+                             <Route exact path='/contact'>
+                                <Contact />
                             </Route>
                         </Switch>
                     </main>

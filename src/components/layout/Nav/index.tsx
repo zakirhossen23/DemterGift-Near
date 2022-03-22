@@ -88,7 +88,11 @@ export function Nav(): JSX.Element {
         <nav className="main-nav">
             <ul>
                 <NavButtons />
-
+                <li>
+                    <NavLink to="/contact" id="contactbtnNav">
+                        Contact
+                    </NavLink>
+                </li>
                 <li>
                     <div id='withoutSign' className="wallets">
                         <div className="wallet">
