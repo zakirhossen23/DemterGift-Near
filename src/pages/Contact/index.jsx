@@ -10,6 +10,11 @@ export default function Contact() {
 
 
     async function SendMessage() {
+        var nameBox = document.getElementById("name");
+        var emailBox = document.getElementById("email");
+        var subjectBox = document.getElementById("subject");
+        var messageBox = document.getElementById("message");
+
         let nameELM = document.getElementById("name").value;
         let emailELM = document.getElementById("email").value;
         let subjectELM = document.getElementById("subject").value;
@@ -34,6 +39,11 @@ export default function Contact() {
             .then(function (response) {
                 console.log('SUCCESS!', response.status, response.text);
                 successMessage.style = ""
+                nameBox.value = "";
+                emailBox.value = "";
+                subjectBox.value = "";
+                messageBox.value = "";
+
             }, function (error) {
                 warnMessage.style = "";
                 console.log('FAILED...', error);
