@@ -123,7 +123,7 @@ export default function Contact() {
                                                     <div class="dbox w-100 d-flex align-items-center">
 
                                                         <div class="text pl-3">
-                                                            <p><span>Website</span> <a href="#">https://demetergift.com/</a></p>
+                                                            <p><span>Website</span> <a href="https://demetergift.com/">https://demetergift.com/</a></p>
                                                         </div>
                                                     </div>
                                                 </div>
