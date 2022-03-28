@@ -72,6 +72,7 @@ export default function CreateEvents() {
         <><>
             <Row>
                 <Col >
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <div style={{ width: "45vw", background: "transparent", padding: "19px", borderRadius: "4px", height: "100%", border: "white solid" }}>
                         <div style={{ margin: "0px 0px 30px 0px" }}>
                             <h1 style={{ marginBottom: "10px" }}>Login</h1>
@@ -85,6 +86,7 @@ export default function CreateEvents() {
                             <EventManger />
                             <UserType />
                         </div>
+                    </div>
                     </div>
                 </Col>
             </Row>

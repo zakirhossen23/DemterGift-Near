@@ -144,14 +144,14 @@ export default function CreateEvents() {
                 return;
             }
             if (document.getElementById("plugin").checked) {
-               await CreatePlugin(`https://${window.location.host}/donation/auction?[${records[0].getId()}]`);
+                await CreatePlugin(`https://${window.location.host}/donation/auction?[${records[0].getId()}]`);
             }
             if (document.getElementById("plugin").checked)
-            await toast.promise(CreateCateCategories(records[0].fields.id), {
-                pending: "Event Categories are creating on Airtable...",
-                error: "Please try again later",
-                success: "Event Categories has created on Airtable!"
-            })
+                await toast.promise(CreateCateCategories(records[0].fields.id), {
+                    pending: "Event Categories are creating on Airtable...",
+                    error: "Please try again later",
+                    success: "Event Categories has created on Airtable!"
+                })
 
 
         });
@@ -254,12 +254,12 @@ export default function CreateEvents() {
     function CreateCategoryButton(): JSX.Element {
         if (window.localStorage.getItem("Type") != "manager") {
             return (<>
-                  <NavLink to="/login?[/CreateEvents]">
-                         <Button style={{ margin: "17px 0 0px 0px", width: "100%" }}>
-                    Login as Event Manager
-                </Button>
-                  </NavLink>
-             
+                <NavLink to="/login?[/CreateEvents]">
+                    <Button style={{ margin: "17px 0 0px 0px", width: "100%" }}>
+                        Login as Event Manager
+                    </Button>
+                </NavLink>
+
             </>);
         }
         return (<>
@@ -293,103 +293,105 @@ export default function CreateEvents() {
             <Row>
 
                 <Col >
-                    <div style={{ width: "45vw", background: "transparent", padding: "19px", borderRadius: "4px", height: "100%", border: "white solid" }}>
-                        <div style={{ margin: "0px 0px 30px 0px" }}>
-                            <h1 style={{ marginBottom: "10px" }}>Create Event</h1>
-                        </div>
-
-                        <div style={{ margin: "18px 0" }}>
-                            <h4 style={{ marginBottom: "10px" }}>Event Title</h4>
-                            {EventTitleInput}
-                        </div>
-
-                        <div style={{ margin: "18px 0" }}>
-                            <h4 style={{ marginBottom: "10px" }}>Event End Date</h4>
-                            {EventDateInput}
-                        </div>
-                        <div style={{ margin: "18px 0" }}>
-                            <h4 style={{ marginBottom: "10px" }}>Wallet Type</h4>
-                            {EventWalletTypeInput}
-                        </div>
-                        <div style={{ margin: "18px 0" }}>
-                            {EventWalletType == "NEAR" ? (<><h4 style={{ marginBottom: "10px" }}>Account ID of {EventWalletType} wallet</h4></>) : (
-                                <> <h4 style={{ marginBottom: "10px" }}>Wallet Address in {EventWalletType}</h4></>
-                            )}
-
-                            {EventWalletAddressInput}
-                        </div>
-                        <div style={{ margin: "18px 0" }}>
-                            <h4 style={{ marginBottom: "10px" }}>Event Goal in {EventWalletType}</h4>
-                            <Form.Control
-                                value={EventGoal}
-                                placeholder={`Event Goal in ${EventWalletType}`}
-                                onChange={(e) => eventGoalChanged(e.target.value)}
-                                type={"number"}
-                                id={"goal"}
-                            />
-                        </div>
-                        <div style={{ margin: "18px 0" }}>
-                            <h4 style={{ marginBottom: "10px" }}>Categories for Support</h4>
-                            <div style={{ marginLeft: "-10px", marginRight: "-10px", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
-                                {
-                                    eventCategories.map((eventCategory, index) => (
-                                        <div style={{ width: "33%", padding: "0 10px", marginBottom: "10px" }} key={index} >
-                                            <div style={{ background: "white", padding: "8px 15px", border: "1px solid transparent", borderRadius: "5px", alignItems: "center", }}>
-                                                <div
-                                                    className="btn btn-icon popup-close"
-                                                    onClick={removeCategory}
-                                                    categoryid={index}
-                                                    style={{ display: "flex", justifyContent: "flex-end", fontSize: 20, color: "black" }}
-                                                >
-                                                    X
-                                                </div>
-                                                <h4 style={{ marginBottom: "10px", color: "#151F28", textAlign: "center" }}>{eventCategory.title}</h4>
-                                                <img src={eventCategory.image} style={{ aspectRatio: '1',borderRadius: "5px" }} />
-                                                <h5 style={{ color: "#151F28", textAlign: "center", marginTop: "10px", lineHeight: "14px" }}>{eventCategory.price * eventCategory.amount} USD</h5>
-                                                <h5 style={{ color: "#151F28", textAlign: "center", lineHeight: "14px" }}>({eventCategory.amount} pieces)</h5>
-
-                                            </div>
-                                        </div>
-                                    ))
-                                }
-
-                                <div style={{ width: "33%", padding: "0 10px", display: "flex", flexDirection: "column" }}>
-                                    {
-                                        (eventCategories.length > 0) ?
-                                            (<div style={{ background: "white", padding: "10px", border: "1px solid transparent", borderRadius: "5px", alignItems: "center", height: "80px", marginBottom: "15px" }}>
-                                                <h4 style={{ marginBottom: "10px", color: "#151F28", textAlign: "center" }}>Other support</h4>
-                                                <h5 style={{ color: "#151F28", textAlign: "center", marginTop: "10px", lineHeight: "14px" }}>{
-                                                    otherCategory
-                                                } USD</h5>
-                                            </div>) : null
-                                    }
-
-                                    <div style={{ background: "white", padding: "10px", border: "1px solid transparent", borderRadius: "5px", alignItems: "center", height: "80px", display: "flex", justifyContent: "center" }} onClick={() => setCreateCategoryModal(true)}>
-                                        <h1 style={{ color: "#757575", textAlign: "center", lineHeight: "14px", fontSize: "50px" }}>+</h1>
-                                    </div>
-                                </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <div style={{ width: "45vw", background: "transparent", padding: "19px", borderRadius: "4px", height: "100%", border: "white solid" }}>
+                            <div style={{ margin: "0px 0px 30px 0px" }}>
+                                <h1 style={{ marginBottom: "10px" }}>Create Event</h1>
                             </div>
 
-                        </div>
-                        <div style={{ margin: "18px 0" }}>
-                            <h4 style={{ marginBottom: "10px" }}>Event Logo Link</h4>
-                            {EventLogoInput}
-                        </div>
+                            <div style={{ margin: "18px 0" }}>
+                                <h4 style={{ marginBottom: "10px" }}>Event Title</h4>
+                                {EventTitleInput}
+                            </div>
 
-                        <div style={{
-                            margin: '18px 0px',
-                            display: 'flex',
-                            alignContent: 'center',
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            gap: '5px'
-                        }} >
-                            <input type="checkbox" id="plugin" />
-                            <h4>Generate Plugin?</h4>
+                            <div style={{ margin: "18px 0" }}>
+                                <h4 style={{ marginBottom: "10px" }}>Event End Date</h4>
+                                {EventDateInput}
+                            </div>
+                            <div style={{ margin: "18px 0" }}>
+                                <h4 style={{ marginBottom: "10px" }}>Wallet Type</h4>
+                                {EventWalletTypeInput}
+                            </div>
+                            <div style={{ margin: "18px 0" }}>
+                                {EventWalletType == "NEAR" ? (<><h4 style={{ marginBottom: "10px" }}>Account ID of {EventWalletType} wallet</h4></>) : (
+                                    <> <h4 style={{ marginBottom: "10px" }}>Wallet Address in {EventWalletType}</h4></>
+                                )}
+
+                                {EventWalletAddressInput}
+                            </div>
+                            <div style={{ margin: "18px 0" }}>
+                                <h4 style={{ marginBottom: "10px" }}>Event Goal in {EventWalletType}</h4>
+                                <Form.Control
+                                    value={EventGoal}
+                                    placeholder={`Event Goal in ${EventWalletType}`}
+                                    onChange={(e) => eventGoalChanged(e.target.value)}
+                                    type={"number"}
+                                    id={"goal"}
+                                />
+                            </div>
+                            <div style={{ margin: "18px 0" }}>
+                                <h4 style={{ marginBottom: "10px" }}>Categories for Support</h4>
+                                <div style={{ marginLeft: "-10px", marginRight: "-10px", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+                                    {
+                                        eventCategories.map((eventCategory, index) => (
+                                            <div style={{ width: "33%", padding: "0 10px", marginBottom: "10px" }} key={index} >
+                                                <div style={{ background: "white", padding: "8px 15px", border: "1px solid transparent", borderRadius: "5px", alignItems: "center", }}>
+                                                    <div
+                                                        className="btn btn-icon popup-close"
+                                                        onClick={removeCategory}
+                                                        categoryid={index}
+                                                        style={{ display: "flex", justifyContent: "flex-end", fontSize: 20, color: "black" }}
+                                                    >
+                                                        X
+                                                    </div>
+                                                    <h4 style={{ marginBottom: "10px", color: "#151F28", textAlign: "center" }}>{eventCategory.title}</h4>
+                                                    <img src={eventCategory.image} style={{ aspectRatio: '1', borderRadius: "5px" }} />
+                                                    <h5 style={{ color: "#151F28", textAlign: "center", marginTop: "10px", lineHeight: "14px" }}>{eventCategory.price * eventCategory.amount} USD</h5>
+                                                    <h5 style={{ color: "#151F28", textAlign: "center", lineHeight: "14px" }}>({eventCategory.amount} pieces)</h5>
+
+                                                </div>
+                                            </div>
+                                        ))
+                                    }
+
+                                    <div style={{ width: "33%", padding: "0 10px", display: "flex", flexDirection: "column" }}>
+                                        {
+                                            (eventCategories.length > 0) ?
+                                                (<div style={{ background: "white", padding: "10px", border: "1px solid transparent", borderRadius: "5px", alignItems: "center", height: "80px", marginBottom: "15px" }}>
+                                                    <h4 style={{ marginBottom: "10px", color: "#151F28", textAlign: "center" }}>Other support</h4>
+                                                    <h5 style={{ color: "#151F28", textAlign: "center", marginTop: "10px", lineHeight: "14px" }}>{
+                                                        otherCategory
+                                                    } USD</h5>
+                                                </div>) : null
+                                        }
+
+                                        <div style={{ background: "white", padding: "10px", border: "1px solid transparent", borderRadius: "5px", alignItems: "center", height: "80px", display: "flex", justifyContent: "center" }} onClick={() => setCreateCategoryModal(true)}>
+                                            <h1 style={{ color: "#757575", textAlign: "center", lineHeight: "14px", fontSize: "50px" }}>+</h1>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ margin: "18px 0" }}>
+                                <h4 style={{ marginBottom: "10px" }}>Event Logo Link</h4>
+                                {EventLogoInput}
+                            </div>
+
+                            <div style={{
+                                margin: '18px 0px',
+                                display: 'flex',
+                                alignContent: 'center',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                gap: '5px'
+                            }} >
+                                <input type="checkbox" id="plugin" />
+                                <h4>Generate Plugin?</h4>
+                            </div>
+
+
+                            <CreateEventButton />
                         </div>
-
-
-                        <CreateEventButton />
                     </div>
                 </Col>
 
