@@ -27,9 +27,6 @@ export default function CreateEvents() {
         }
         redirecting = m[1];
     }
-
-
-
     function TypeSet(e) {
         window.localStorage.setItem("Type", e.target.getAttribute("type"));
         setModalShow(true);

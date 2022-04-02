@@ -8,7 +8,6 @@ import './css/style'
 
 export default function Contact() {
 
-
     async function SendMessage() {
         var nameBox = document.getElementById("name");
         var emailBox = document.getElementById("email");

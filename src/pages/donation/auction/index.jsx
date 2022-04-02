@@ -251,18 +251,7 @@ export default function Auction() {
         setselectprice(e.target.getAttribute("price"));
         setselectwallet(e.target.getAttribute("wallet"));
         setLotteryNumber(e.target.getAttribute("ticketnumber"));
-        setBuyLotteryModalShow(true);
-        // await toast.promise(BuyingLottery(Amount, ToAddress), {
-        //     pending: "Buying Lottery...",
-        //     error: "Please try again later",
-        //     success: "Bought successfully!"
-        // })
-        // await toast.promise(CreatingOnAirtable(nftid, nftrecid), {
-        //     pending: "Updating on Airtable...",
-        //     error: "Please try again later",
-        //     success: "Updated successfully!"
-        // })
-        // window.location.reload();
+        setBuyLotteryModalShow(true);     
     }
     async function BuyingLottery(Amount, ToAddress) {
         var buttonProps = document.getElementsByClassName("btn btn-primary")[0];
@@ -397,32 +386,17 @@ export default function Auction() {
     return (
         <>
             <div className="row EventContainer" >
-                <div style={{
-                    display: 'flex',
-                    width: '100%',
-                    position: 'relative'
-                }}>
+                <div style={{display: 'flex',width: '100%',position: 'relative'}}>
                     <img src={logo} className="AuctionImage" />
-                    <div className="DetialsContainer" style={{
-                        rowGap: '16px',
-                        paddingTop: '70px'
-                    }}>
-                        <h4 style={{
-                            fontSize: '2vw'
-                        }} >{title}</h4>
+                    <div className="DetialsContainer" style={{rowGap: '16px',paddingTop: '70px'}}>
+                        <h4 style={{fontSize: '2vw'}} >{title}</h4>
 
                         <div className='TextContainer'>
-                            <h4 style={{
-                                fontSize: '2vw'
-                            }}>Goal: </h4>
-                            <h4 style={{
-                                fontSize: '2vw'
-                            }}>$ {goalusd} ({goal} {walletType})</h4>
+                            <h4 style={{fontSize: '2vw'}}>Goal: </h4>
+                            <h4 style={{fontSize: '2vw'}}>$ {goalusd} ({goal} {walletType})</h4>
                         </div>
                         <div className='TextContainer'>
-                            <h4 style={{
-                                fontSize: '2vw'
-                            }} name='dateleft' date={date}>{dateleft}</h4>
+                            <h4 style={{fontSize: '2vw'}} name='dateleft' date={date}>{dateleft}</h4>
                         </div>
                     </div>
                     <Topbutton />
@@ -434,10 +408,7 @@ export default function Auction() {
             </div>
             {list.map((listItem) => (
                 <div key={listItem.Id} className="row ElementsContainer bgWhite">
-                    <div style={{
-                        width: '100%',
-                        display: 'flex'
-                    }}>
+                    <div style={{width: '100%',display: 'flex'}}>
                         {listItem.type == "Cryptopunk" ? (
                             <img src={listItem.image} className="AuctionBidImage pixel" />
                         ) : (
