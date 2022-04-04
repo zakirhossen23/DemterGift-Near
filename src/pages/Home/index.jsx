@@ -137,7 +137,7 @@ export default function Home() {
         </>
 		<div className="mb-5">
 			<div className="row">
-				<img style={{ 'width': '340px' }} src='https://i.postimg.cc/1z7RpZsX/favicon.png'></img>
+				<img style={{ 'width': '340px' }} src='https://i.postimg.cc/Lsxrbz02/Logo-2.png'></img>
 
 			</div>
 			<div className="row">
@@ -150,7 +150,7 @@ export default function Home() {
 			<div className="row">
 				<div style={{ 'width': '690px' }} className="col">
 					<div className="text-center">
-						<h4 style={{ fontSize: '20px' }}>Demeter creates the most easy, transparent and fun NFT charity auction on Web3, by helping charities raise additional support!</h4>
+						<h4 style={{ fontSize: '20px' }}>DemeterGift creates the most easy, transparent and fun NFT charity auction on Web3, by helping charities raise additional support!</h4>
 					</div>
 				</div>
 			</div>

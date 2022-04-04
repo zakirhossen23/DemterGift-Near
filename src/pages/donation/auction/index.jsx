@@ -260,7 +260,7 @@ export default function Auction() {
             await toast.warn("Not connected with NEAR wallet! Connecting...");
             await window.walletAccount.requestSignIn(
                 window.nearConfig.contractName,
-                'Demeter');
+                'DemeterGift');
             return;
         }
         const config = {

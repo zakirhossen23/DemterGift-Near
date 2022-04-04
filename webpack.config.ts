@@ -77,41 +77,41 @@ export default (_: any, options: any): WebpackConfig => {
 
     config.plugins.push(
         new HtmlWebpackPlugin({
-            title: 'Demeter',
+            title: 'DemeterGift',
             favicon: 'public/favicon.ico',
             filename: path.resolve(__dirname, 'dist/index.html'),
             template: 'public/index.html',
             inject: false,
         })
         , new HtmlWebpackPlugin({
-            title: 'Demeter - Donation',
+            title: 'DemeterGift - Donation',
             favicon: 'public/favicon.ico',
             filename: path.resolve(__dirname, 'dist/donation/index.html'),
             template: 'public/index.html',
             inject: false,
         })
         , new HtmlWebpackPlugin({
-            title: 'Demeter - Login',
+            title: 'DemeterGift - Login',
             favicon: 'public/favicon.ico',
             filename: path.resolve(__dirname, 'dist/login/index.html'),
             template: 'public/index.html',
             inject: false,
         })
         , new HtmlWebpackPlugin({
-            title: 'Demeter - Create Events',
+            title: 'DemeterGift - Create Events',
             favicon: 'public/favicon.ico',
             filename: path.resolve(__dirname, 'dist/CreateEvents/index.html'),
             template: 'public/index.html',
             inject: false,
         })
         , new HtmlWebpackPlugin({
-            title: 'Demeter - Auction',
+            title: 'DemeterGift - Auction',
             filename: path.resolve(__dirname, 'dist/donation/auction/index.html'),
             template: 'public/index.html',
             inject: false,
         }),
          new HtmlWebpackPlugin({
-            title: 'Demeter - Contact',
+            title: 'DemeterGift - Contact',
             filename: path.resolve(__dirname, 'dist/contact/index.html'),
             template: 'public/index.html',
             inject: false,

@@ -190,7 +190,7 @@ export default function BidNFTModal({
 			await toast.warn("Not connected with NEAR wallet! Connecting...");
 			await window.walletAccount.requestSignIn(
 				window.nearConfig.contractName,
-				'Demeter');
+				'DemeterGift');
 			return;
 		}
 		// We call say Hi and then update who said Hi last.

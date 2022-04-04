@@ -234,7 +234,7 @@ function Home() {
     style: {
       fontSize: '20px'
     }
-  }, "Demeter creates the most easy, transparent and fun NFT charity auction on Web3, by helping charities raise additional support!")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__.createElement("div", {
+  }, "DemeterGift creates the most easy, transparent and fun NFT charity auction on Web3, by helping charities raise additional support!")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__.createElement("div", {
     className: "row"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__.createElement("div", {
     style: {

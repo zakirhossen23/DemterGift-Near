@@ -75,7 +75,7 @@ export default function Login({
     async function onClickConnectNear() {
         window.walletAccount.requestSignIn(
             window.nearConfig.contractName,
-            'Demeter');
+            'DemeterGift');
     }
     async function onClickConnectedNEAR() {
         //   window.location.href = (redirecting);
