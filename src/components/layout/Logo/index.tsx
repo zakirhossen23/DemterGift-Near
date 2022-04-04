@@ -9,7 +9,7 @@ export function Logo(): JSX.Element {
         <div className="logo">
 
             <NavLink to="/">
-                <div style={{ "display": "flex" }}>
+                <div style={{ "display": "flex",alignItems: 'center' }}>
                     <img className="NavImg" src="https://i.postimg.cc/Lsxrbz02/Logo-2.png" />
                     <div className="navbar-brand">DemeterGift</div>
                 </div>
